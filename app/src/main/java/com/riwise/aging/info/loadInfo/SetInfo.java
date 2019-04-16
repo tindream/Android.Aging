@@ -8,6 +8,22 @@ public class SetInfo extends LoadInfo {
     public boolean iHeard;
     public String desc;
 
+    public SetInfo() {
+        super(LoadType.none);
+        this.iHeard = true;
+    }
+
+    public SetInfo(String msg) {
+        super(LoadType.none);
+        this.Message = msg;
+    }
+
+    public SetInfo(String msg, String desc) {
+        super(LoadType.none);
+        this.Message = msg;
+        this.desc = desc;
+    }
+
     public SetInfo(int imageId, String msg) {
         super(LoadType.none);
         this.imageId = imageId;
@@ -19,11 +35,5 @@ public class SetInfo extends LoadInfo {
         this.imageId = imageId;
         this.Message = msg;
         this.desc = desc;
-    }
-
-    public SetInfo(String msg) {
-        super(LoadType.none);
-        this.Message = msg;
-        this.iHeard = true;
     }
 }

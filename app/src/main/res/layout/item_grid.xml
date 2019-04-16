@@ -4,15 +4,10 @@
     android:layout_height="match_parent"
     android:background="@drawable/selector_gridview"
     android:orientation="vertical"
-    android:padding="10dp">
-
-    <ImageView
-        android:id="@+id/grid_img"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center" />
+    android:paddingLeft="10dp"
+    android:paddingTop="20dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="20dp">
 
     <TextView
         android:id="@+id/grid_name"

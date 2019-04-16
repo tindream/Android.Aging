@@ -7,15 +7,13 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
 
 import com.riwise.aging.R;
-import com.riwise.aging.support.Config;
-import com.riwise.aging.support.Method;
 
 public class View_About extends View_Base {
     public void show() {
         super.show();
 
         TextView textView = view_custom.findViewById(R.id.about_title);
-        textView.setText(R.string.nav_about);
+        textView.setText(R.string.btn_about);
 
         String desc = "Version：" + activity.getString(R.string.version);
         SpannableString span = new SpannableString(desc);

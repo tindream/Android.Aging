@@ -15,16 +15,18 @@
         android:theme="?attr/actionBarTheme"
         app:contentInsetStartWithNavigation="0dp"
         app:navigationIcon="@drawable/ic_back_while"
-        app:title="@string/app_name"
+        app:title="@string/btn_set"
         app:titleMargin="0dp"
         app:titleTextColor="@color/While" />
 
-    <TextView
-        android:id="@+id/notification_text"
+    <ListView
+        android:id="@+id/set_listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:text="@string/desc_load"
-        android:textAlignment="center" />
+        android:layout_height="match_parent"
+        android:divider="@color/colorGray"
+        android:dividerHeight="1dp"
+        android:listSelector="@drawable/selector_listview"
+        android:scrollbarSize="@dimen/scrollbarSize"
+        android:scrollbarThumbVertical="@color/colorPrimary" />
 
 </LinearLayout>

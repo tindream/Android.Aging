@@ -44,8 +44,9 @@ public class SQLiteServer {
 
     public void loadAdmin() throws Exception {
         List<AdminBaseInfo> list = queryList(AdminBaseInfo.class, new AdminBaseInfo().getSql());
-        Field[] fields = AdminInfo.class.getDeclaredFields();
+        Field[] fields = AdminInfo.class.getFields();
         for (Field field : fields) {
+            if (field.toGenericString().contains("static")) continue;
             String name = field.getName();
             for (AdminBaseInfo info : list) {
                 if (info.Name.equals(name)) {

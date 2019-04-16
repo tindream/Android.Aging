@@ -7,7 +7,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 
-import com.riwise.aging.info.eventInfo.ErrorEventInfo;
+import com.riwise.aging.info.loadInfo.ErrorEventInfo;
 import com.riwise.aging.info.loadInfo.LoadInfo;
 
 public abstract class AsyncBase extends ListenerBase {

@@ -12,6 +12,7 @@ public class ConverHelper {
     public static <T> void setValue(T t, Cursor cursor) throws Exception {
         Field[] fields = t.getClass().getFields();
         for (Field field : fields) {
+            if (field.toGenericString().contains("static")) continue;
             Object value = null;
             String name = field.getType().getName();
             if (name == boolean.class.getName()) {
@@ -38,6 +39,7 @@ public class ConverHelper {
     public static <T> void setValue(T t, ResultSet rs) throws Exception {
         Field[] fields = t.getClass().getFields();
         for (Field field : fields) {
+            if (field.toGenericString().contains("static")) continue;
             Object value = null;
             String name = field.getType().getName();
             if (name == boolean.class.getName()) {
@@ -87,6 +89,7 @@ public class ConverHelper {
         ContentValues values = new ContentValues();
         Field[] fields = t.getClass().getFields();
         for (Field field : fields) {
+            if (field.toGenericString().contains("static")) continue;
             String name = field.getType().getName();
             if (name == boolean.class.getName()) {
                 values.put(field.getName(), (boolean) field.get(t));
@@ -110,6 +113,7 @@ public class ConverHelper {
     public static <T> boolean iEquals(T t, T obj) throws Exception {
         Field[] fields = t.getClass().getFields();
         for (Field field : fields) {
+            if (field.toGenericString().contains("static")) continue;
             // 获取该属性名称与值
             Object value = field.get(t);
             Object value2 = field.get(obj);
@@ -121,6 +125,7 @@ public class ConverHelper {
     public static <T> void setValue(T t, T obj) throws Exception {
         Field[] fields = t.getClass().getFields();
         for (Field field : fields) {
+            if (field.toGenericString().contains("static")) continue;
             Object value = field.get(obj);
             field.set(t, value);
         }

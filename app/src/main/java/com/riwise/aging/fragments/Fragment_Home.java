@@ -1,8 +1,6 @@
 package com.riwise.aging.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -12,24 +10,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.ObservableEmitter;
+
 import com.riwise.aging.R;
-import com.riwise.aging.activity.WebActivity;
 import com.riwise.aging.enums.IListListener;
 import com.riwise.aging.enums.ILoadListener;
 import com.riwise.aging.enums.LoadType;
+import com.riwise.aging.info.loadInfo.SetInfo;
 import com.riwise.aging.info.setInfo.AdapterInfo;
-import com.riwise.aging.info.loadInfo.GridInfo;
 import com.riwise.aging.info.loadInfo.LoadInfo;
 import com.riwise.aging.info.setInfo.LoaderInfo;
 import com.riwise.aging.support.AsyncListView;
-import com.riwise.aging.support.Method;
 import com.riwise.aging.support.ViewHolder;
 
 public class Fragment_Home extends Fragment_Base implements View.OnClickListener, IListListener, ILoadListener {
@@ -55,9 +52,10 @@ public class Fragment_Home extends Fragment_Base implements View.OnClickListener
         super.onFragmentFirstVisible();
         super.load(R.id.home_context, R.id.home_load, R.id.home_text, false);
 
-        List<GridInfo> list = new ArrayList();
-        list.add(new GridInfo(R.drawable.ic_home, getString(R.string.nav_home)));
-        list.add(new GridInfo(R.drawable.ic_my, getString(R.string.nav_my)));
+        List<SetInfo> list = new ArrayList();
+        list.add(new SetInfo(getString(R.string.btn_10)));
+        list.add(new SetInfo(getString(R.string.btn_18)));
+        list.add(new SetInfo(getString(R.string.btn_24)));
 
         new AsyncListView().setListener(this, this).init(getActivity(), list, R.layout.item_grid);
         load(isComplete);
@@ -66,24 +64,22 @@ public class Fragment_Home extends Fragment_Base implements View.OnClickListener
 
     @Override
     public <T> void onReady(ObservableEmitter<LoadInfo> emitter, ViewHolder holder, T object) {
-        if (!(object instanceof GridInfo)) return;
-        GridInfo obj = (GridInfo) object;
+        if (!(object instanceof SetInfo)) return;
+        SetInfo obj = (SetInfo) object;
 
         emitter.onNext(new LoaderInfo(LoadType.setText, holder, R.id.grid_name, obj.Message));
-        emitter.onNext(new LoaderInfo(LoadType.setImageId, holder, R.id.grid_img, obj.imageId));
     }
 
     @Override
     public void onReady(LoadInfo info) {
         switch (info.Types) {
             case setAdapter:
-                GridView gridView = getActivity().findViewById(R.id.gridView1);
+                GridView listView = getActivity().findViewById(R.id.home_gridView1);
                 //设置listView的Adapter
-                gridView.setAdapter(((AdapterInfo) info).adapter);
-                gridView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
+                listView.setAdapter(((AdapterInfo) info).adapter);
+                listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
                     //我们需要的内容，跳转页面或显示详细信息
-                    GridInfo gridInfo = (GridInfo) ((AdapterInfo) info).list.get(position);
-                    TextView grid_name = view.findViewById(R.id.grid_name);
+                    SetInfo gridInfo = (SetInfo) ((AdapterInfo) info).list.get(position);
                 });
                 break;
         }

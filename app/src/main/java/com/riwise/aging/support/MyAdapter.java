@@ -11,11 +11,9 @@ import java.util.List;
 public abstract class MyAdapter<T> extends ArrayAdapter<T> {
     protected List<T> list;
     private int mLayoutRes;           //布局id
-    private Context context;
 
     public MyAdapter(Context context, int resource, List<T> list) {
         super(context, resource, list);
-        this.context = context;
         this.mLayoutRes = resource;
         this.list = list;
     }

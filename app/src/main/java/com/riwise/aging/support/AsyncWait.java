@@ -15,7 +15,7 @@ public class AsyncWait extends AsyncBase {
 
     @Override
     protected void onLoadData(ObservableEmitter<LoadInfo> emitter, LoadInfo info) throws Exception {
-        Thread.sleep(((TimeInfo) info).onlyTime);
+        Thread.sleep(((TimeInfo) info).time);
         emitter.onNext(info);
     }
 }

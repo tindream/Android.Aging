@@ -1,64 +1,54 @@
-package com.riwise.aging.fragments;
+package com.riwise.aging.activity;
+
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.riwise.aging.R;
+import com.riwise.aging.enums.IListListener;
+import com.riwise.aging.enums.ILoadListener;
+import com.riwise.aging.enums.LoadType;
+import com.riwise.aging.info.loadInfo.LoadInfo;
+import com.riwise.aging.info.loadInfo.SetInfo;
+import com.riwise.aging.info.setInfo.AdapterInfo;
+import com.riwise.aging.info.setInfo.LoaderInfo;
+import com.riwise.aging.support.AsyncListView;
+import com.riwise.aging.support.Config;
+import com.riwise.aging.support.Method;
+import com.riwise.aging.support.ViewHolder;
+import com.riwise.aging.ui.ChildActivity;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.ObservableEmitter;
-import com.riwise.aging.R;
-import com.riwise.aging.activity.WebActivity;
-import com.riwise.aging.data.SQLiteServer;
-import com.riwise.aging.enums.IListListener;
-import com.riwise.aging.enums.ILoadListener;
-import com.riwise.aging.enums.LoadType;
-import com.riwise.aging.info.setInfo.AdapterInfo;
-import com.riwise.aging.info.loadInfo.LoadInfo;
-import com.riwise.aging.info.setInfo.LoaderInfo;
-import com.riwise.aging.info.loadInfo.SetInfo;
-import com.riwise.aging.support.AsyncListView;
-import com.riwise.aging.support.AsyncWait;
-import com.riwise.aging.support.Config;
-import com.riwise.aging.support.Method;
-import com.riwise.aging.support.ViewHolder;
 
-public class Fragment_My extends Fragment_Base implements IListListener, ILoadListener {
-    @Nullable
+public class SetActivity extends ChildActivity implements IListListener, ILoadListener {
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View messageLayout = inflater.inflate(R.layout.fragment_my, container, false);
-        return messageLayout;
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.layoutResID = R.layout.activity_set;
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        super.load(R.id.my_context, R.id.my_load, R.id.my_text, false);
-    }
-
-    @Override
-    protected void onFragmentFirstVisible() {
-        super.onFragmentFirstVisible();
-
+    protected void onStart() {
+        super.onStart();
         List<SetInfo> list = new ArrayList();
-        list.add(new SetInfo(null));
-        list.add(new SetInfo(R.drawable.ic_home, getString(R.string.nav_home)));
-        list.add(new SetInfo(null));
-        list.add(new SetInfo(0, getString(R.string.btn_log)));
-        list.add(new SetInfo(0, getString(R.string.nav_about), getString(R.string.version)));
-        list.add(new SetInfo(0, getString(R.string.btn_close)));
-        new AsyncListView().setListener(this, this).init(getActivity(), list, R.layout.item_set);
-        super.load(R.id.my_context, R.id.my_load, R.id.my_text, true);
+        list.add(new SetInfo());
+        list.add(new SetInfo(getString(R.string.btn_10)));
+        list.add(new SetInfo(getString(R.string.btn_18)));
+        list.add(new SetInfo(getString(R.string.btn_24)));
+        list.add(new SetInfo());
+        list.add(new SetInfo(getString(R.string.btn_log)));
+        list.add(new SetInfo(getString(R.string.btn_about), getString(R.string.version)));
+        new AsyncListView().setListener(this, this).init(this, list, R.layout.item_set);
     }
 
     @Override
@@ -82,7 +72,7 @@ public class Fragment_My extends Fragment_Base implements IListListener, ILoadLi
                 LoaderInfo loader = (LoaderInfo) info;
                 TextView textView = loader.holder.getView(loader.id);
                 textView.setPadding(0, 0, 0, 0);
-                textView.setBackgroundColor(getActivity().getResources().getColor(R.color.colorGray));
+                textView.setBackgroundColor(getResources().getColor(R.color.colorGray));
                 Method.setSize(textView, 0, 10 * Config.display.density);
                 loader.holder.getView(R.id.set_right).setVisibility(View.GONE);
                 break;
@@ -93,17 +83,16 @@ public class Fragment_My extends Fragment_Base implements IListListener, ILoadLi
                 }
                 break;
             case setAdapter:
-                ListView listView = getActivity().findViewById(R.id.my_listView);
+                ListView listView = findViewById(R.id.set_listView);
                 //设置listView的Adapter
                 listView.setAdapter(((AdapterInfo) info).adapter);
                 listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
                     //我们需要的内容，跳转页面或显示详细信息
                     SetInfo setInfo = (SetInfo) ((AdapterInfo) info).list.get(position);
                     if (setInfo.iHeard) return;
-                    TextView set_name = view.findViewById(R.id.set_name);
                     switch (setInfo.Message) {
                         case "日志":
-                            Intent intent = new Intent(getActivity(), WebActivity.class);
+                            Intent intent = new Intent(this, LogActivity.class);
                             //将text框中的值传入
                             intent.putExtra("title", "日志");
                             File file = new File(Environment.getExternalStorageDirectory(), "/Tinn/Aging/log.txt");
@@ -111,14 +100,7 @@ public class Fragment_My extends Fragment_Base implements IListListener, ILoadLi
                             startActivity(intent);
                             break;
                         case "关于":
-                            Method.show(getActivity());
-                            break;
-                        case "关闭":
-                            Method.ask(getActivity(), "Confirm Close").setListener(obj -> {
-                                if (obj.Types == LoadType.confirm) {
-                                    System.exit(0);
-                                }
-                            });
+                            Method.show(this);
                             break;
                     }
                 });

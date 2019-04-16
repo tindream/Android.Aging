@@ -1,4 +1,4 @@
-package com.riwise.aging.info.eventInfo;
+package com.riwise.aging.info.loadInfo;
 
 import com.riwise.aging.enums.LoadType;
 import com.riwise.aging.info.loadInfo.LoadInfo;

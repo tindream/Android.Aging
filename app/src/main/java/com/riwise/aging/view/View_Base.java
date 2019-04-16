@@ -34,7 +34,6 @@ public abstract class View_Base extends ListenerBase {
     }
 
     protected void autoSize(int rateWeight) {
-        Config.view_base = this;
         autoWeight(rateWeight);
     }
 

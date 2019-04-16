@@ -133,6 +133,19 @@ public class Method {
         toast.show();
         log(msg);
     }
+    public static void clear() {
+        try {
+            File file = new File(Environment.getExternalStorageDirectory(), "/Tinn/Aging");
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            file = new File(file.getPath(), "/log.txt");
+            file.delete();
+            log("clear");
+        } catch (Exception e) {
+            Log.e(Config.Text, msg(e));
+        }
+    }
 
     public static void log(Object msg) {
         Log.e(Config.Text, msg.toString());

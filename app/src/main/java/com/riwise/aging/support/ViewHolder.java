@@ -12,12 +12,10 @@ public class ViewHolder {
     private SparseArray<View> mViews;   //存储ListView 的 item中的View
     private View item;                  //存放convertView
     private int position;               //游标
-    private Context context;            //Context上下文
 
     //构造方法，完成相关初始化
     private ViewHolder(Context context, ViewGroup parent, int layoutRes) {
         mViews = new SparseArray<>();
-        this.context = context;
         View convertView = LayoutInflater.from(context).inflate(layoutRes, parent, false);
         convertView.setTag(this);
         item = convertView;
