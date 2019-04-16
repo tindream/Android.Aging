@@ -51,6 +51,10 @@ public abstract class MyAdapter<T> extends ArrayAdapter<T> {
         notifyDataSetChanged();
     }
 
+    public List<T> get() {
+        return list;
+    }
+
     //往特定位置，添加一个元素
     public void add(int position, T data) {
         if (list == null) {

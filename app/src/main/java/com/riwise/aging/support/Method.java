@@ -19,9 +19,12 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -37,9 +40,31 @@ import com.riwise.aging.view.View_Confirm;
 public class Method {
     private static Toast toast;
 
-    private static final String PUSH_CHANNEL_ID = "PUSH_NOTIFY_ID";
-    private static final String PUSH_CHANNEL_NAME = "PUSH_NOTIFY_NAME";
-    private static NotificationManager notificationManager;
+    //获取外置SD卡路径
+    public static List<String> getExtSDCardPath() {
+        List<String> lResult = new ArrayList<>();
+        try {
+            Process process = Runtime.getRuntime().exec("mount");
+            InputStream is = process.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.contains("extSdCard")) {
+                    String[] arr = line.split(" ");
+                    String path = arr[1];
+                    File file = new File(path);
+                    if (file.isDirectory()) {
+                        lResult.add(path);
+                    }
+                }
+            }
+            isr.close();
+        } catch (Exception e) {
+            log(e);
+        }
+        return lResult;
+    }
 
     //询问权限
     public static void requestPower(String[] permissions) {
@@ -133,13 +158,10 @@ public class Method {
         toast.show();
         log(msg);
     }
+
     public static void clear() {
         try {
-            File file = new File(Environment.getExternalStorageDirectory(), "/Tinn/Aging");
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            file = new File(file.getPath(), "/log.txt");
+            File file = new File(Config.file.getPath(), "log.txt");
             file.delete();
             log("clear");
         } catch (Exception e) {
@@ -151,11 +173,7 @@ public class Method {
         Log.e(Config.Text, msg.toString());
         FileWriter writer = null;
         try {
-            File file = new File(Environment.getExternalStorageDirectory(), "/Tinn/Aging");
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            file = new File(file.getPath(), "/log.txt");
+            File file = new File(Config.file.getPath(), "log.txt");
             writer = new FileWriter(file, true);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             writer.write(format.format(new Date(System.currentTimeMillis())) + ": " + msg + "\r\n");

@@ -14,8 +14,8 @@ import com.riwise.aging.support.Method;
 public class MainActivity extends MainBaseActivity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Method.log("Version=" + this.getString(R.string.version));
         Config.load(this);
+        Method.log("Version=" + this.getString(R.string.version));
         CrashHandlers.getInstance().init();
         super.layoutResID = R.layout.activity_main;
         super.onCreate(savedInstanceState);
@@ -23,7 +23,7 @@ public class MainActivity extends MainBaseActivity implements View.OnClickListen
         new AsyncLoad().setListener(this);
         initFragments();
         String[] permissions = new String[]{
-                Manifest.permission.READ_PHONE_STATE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
         Method.requestPower(permissions);
     }

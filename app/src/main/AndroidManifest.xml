@@ -2,10 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.riwise.aging">
 
-    <!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据-->
+    <!-- 写入扩展存储，向扩展卡写入数据-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-
-    <!--允许应用程序完全使用网络-->
     <!--访问网络连接-->
     <uses-permission android:name="android.permission.INTERNET" />
     <application
