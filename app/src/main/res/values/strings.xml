@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">Aging</string>
+    <string name="app_name">AgingTest</string>
+    <string name="desc_load">Loading</string>
+
+    <string name="nav_home">首页</string>
+    <string name="nav_my">设置</string>
+    <string name="nav_about">关于</string>
+
+    <string name="btn_confirm">确认</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_login">登陆</string>
+    <string name="btn_location">定位</string>
+    <string name="btn_log">日志</string>
+    <string name="btn_logout">退出</string>
+    <string name="btn_close">关闭</string>
 </resources>

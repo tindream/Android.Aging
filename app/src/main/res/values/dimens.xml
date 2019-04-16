@@ -1,0 +1,12 @@
+<resources>
+    <dimen name="scrollbarSize">2dp</dimen>
+    <dimen name="text14">14sp</dimen>
+    <dimen name="text16">16sp</dimen>
+    <dimen name="text18">18sp</dimen>
+    <dimen name="text20">20sp</dimen>
+    <dimen name="text24">24sp</dimen>
+    <dimen name="navSize">24dp</dimen>
+    <dimen name="radius">30dp</dimen>
+    <dimen name="layoutRound">7dp</dimen>
+    <dimen name="btnRound">5dp</dimen>
+</resources>
