@@ -4,5 +4,5 @@
     <item
         android:drawable="@color/colorPrimaryWhile"
         android:state_pressed="true" />
-    <item android:drawable="@color/While" />//未点击时控件的背景
+    <item android:drawable="@color/colorGrayLight" />//未点击时控件的背景
 </ripple>

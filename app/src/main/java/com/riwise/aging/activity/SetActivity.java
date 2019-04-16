@@ -47,7 +47,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         list.add(new SetInfo(getString(R.string.btn_24)));
         list.add(new SetInfo());
         list.add(new SetInfo(getString(R.string.btn_log)));
-        list.add(new SetInfo(getString(R.string.btn_about), getString(R.string.version)));
+        list.add(new SetInfo(getString(R.string.btn_about), getString(R.string.version), true));
         new AsyncListView().setListener(this, this).init(this, list, R.layout.item_set);
     }
 
@@ -60,8 +60,11 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         emitter.onNext(new LoaderInfo(LoadType.setText, holder, R.id.set_desc, obj.desc));
         emitter.onNext(new LoaderInfo(LoadType.setImageId, holder, R.id.set_img, obj.imageId));
         if (obj.iHeard) {
-            emitter.onNext(new LoaderInfo(LoadType.setLine, holder, R.id.set_name, ""));
-            emitter.onNext(new LoaderInfo(LoadType.setLine, holder, R.id.set_desc, ""));
+            emitter.onNext(new LoaderInfo(LoadType.setLine, holder, R.id.set_name));
+            emitter.onNext(new LoaderInfo(LoadType.setLine, holder, R.id.set_desc));
+        }
+        if (obj.noRight) {
+            emitter.onNext(new LoaderInfo(LoadType.setNoRight, holder, R.id.set_right));
         }
     }
 
@@ -75,6 +78,10 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
                 textView.setBackgroundColor(getResources().getColor(R.color.colorGray));
                 Method.setSize(textView, 0, 10 * Config.display.density);
                 loader.holder.getView(R.id.set_right).setVisibility(View.GONE);
+                break;
+            case setNoRight:
+                loader = (LoaderInfo) info;
+                loader.holder.getView(loader.id).setVisibility(View.GONE);
                 break;
             case setImageId:
                 loader = (LoaderInfo) info;

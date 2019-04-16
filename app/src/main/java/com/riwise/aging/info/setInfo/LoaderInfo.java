@@ -19,15 +19,18 @@ public class LoaderInfo extends LoadInfo {
         this.holder = holder;
     }
 
-    public LoaderInfo(LoadType type, ViewHolder holder, int id, String msg) {
+    public LoaderInfo(LoadType type, ViewHolder holder, int id) {
         this(type, holder);
         this.id = id;
+    }
+
+    public LoaderInfo(LoadType type, ViewHolder holder, int id, String msg) {
+        this(type, holder, id);
         this.msg = msg;
     }
 
     public LoaderInfo(LoadType type, ViewHolder holder, int id, File file) {
-        this(type, holder);
-        this.id = id;
+        this(type, holder, id);
         this.file = file;
     }
 
