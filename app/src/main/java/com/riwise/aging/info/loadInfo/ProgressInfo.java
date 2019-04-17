@@ -18,11 +18,11 @@ public class ProgressInfo extends LoadInfo {
         this.loading = true;
     }
 
-    public ProgressInfo(String name, String desc) {
+    public ProgressInfo(String name, String desc, boolean complete) {
         super(LoadType.progress);
         this.name = name;
         this.desc = desc;
         this.loading = false;
-        this.complete = true;
+        this.complete = complete;
     }
 }

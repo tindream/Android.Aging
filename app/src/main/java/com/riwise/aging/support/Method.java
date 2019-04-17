@@ -40,6 +40,11 @@ import com.riwise.aging.view.View_Confirm;
 public class Method {
     private static Toast toast;
 
+    public static String getExtensionName(File file) {
+        String name = file.getName();
+        return name.substring(name.lastIndexOf(".") + 1);
+    }
+
     //获取外置SD卡路径
     public static List<String> getExtSDCardPath() {
         List<String> lResult = new ArrayList<>();

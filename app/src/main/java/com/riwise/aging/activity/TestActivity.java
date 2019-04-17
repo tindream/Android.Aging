@@ -116,7 +116,7 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
 
     private void loadListview() {
         List<SetInfo> list = new ArrayList();
-        list.add(new SetInfo("剩余空间", info.Last + "G(" + (Config.I32 ? "" : ">") + " 32G)", true));
+        list.add(new SetInfo("剩余空间", info.Last + "G(" + (Config.I32 ? "" : ">") + "32G)", true));
         list.add(new SetInfo("碎片化", ""));
         list.add(new SetInfo("图片", info.Image + ""));
         list.add(new SetInfo("音频", info.Audio + ""));
