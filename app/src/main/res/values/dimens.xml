@@ -7,6 +7,7 @@
     <dimen name="text24">24sp</dimen>
     <dimen name="navSize">24dp</dimen>
     <dimen name="radius">30dp</dimen>
+    <dimen name="radius2">20dp</dimen>
     <dimen name="layoutRound">7dp</dimen>
     <dimen name="btnRound">5dp</dimen>
 </resources>

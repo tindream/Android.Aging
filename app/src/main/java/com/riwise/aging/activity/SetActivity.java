@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.leon.lfilepickerlibrary.LFilePicker;
+import com.leon.lfilepickerlibrary.utils.Constant;
 import com.riwise.aging.R;
 import com.riwise.aging.data.SQLiteServer;
 import com.riwise.aging.enums.FileType;
@@ -23,7 +23,6 @@ import com.riwise.aging.info.loadInfo.SetInfo;
 import com.riwise.aging.info.setInfo.AdapterInfo;
 import com.riwise.aging.info.setInfo.LoaderInfo;
 import com.riwise.aging.support.AsyncListView;
-import com.riwise.aging.support.Cache;
 import com.riwise.aging.support.Config;
 import com.riwise.aging.support.Method;
 import com.riwise.aging.support.MyAdapter;
@@ -88,7 +87,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            List<String> list = data.getStringArrayListExtra("paths");
+            List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);
             String path = list.size() > 0 ? list.get(0) : null;
             String name = null;
             SQLiteServer server = new SQLiteServer();
@@ -150,7 +149,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
             case "10个月老化模型":
             case "18个月老化模型":
             case "24个月老化模型":
-                Intent intent = new Intent(this, AgingSetActivity.class);
+                Intent intent = new Intent(this, AgingActivity.class);
                 //将text框中的值传入
                 intent.putExtra("title", text);
                 startActivity(intent);
@@ -159,7 +158,8 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         LFilePicker picker = new LFilePicker()
                 .withActivity(this)
                 .withTitle(text)
-                .withMutilyMode(false);
+                .withMutilyMode(false)
+                .withBackIcon(Constant.BACKICON_STYLETHREE);
         String path = null;
         switch (text) {
             case FileType.Images:
@@ -198,12 +198,10 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
                 picker.start();
                 break;
             case FileType.Contacts:
-                picker.start();
-//                picker.withFileFilter(new String[]{".vcf"}).start();
+                picker.withFileFilter(new String[]{".vcf"}).start();
                 break;
             case FileType.Apps:
-                picker.start();
-//                picker.withFileFilter(new String[]{".apk"}).start();
+                picker.withFileFilter(new String[]{".apk"}).start();
                 break;
             case FileType.File4s:
             case FileType.File8s:
@@ -246,9 +244,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
                 break;
             case setImageId:
                 loader = (LoaderInfo) info;
-                if (loader.imageId == 0) {
-                    loader.holder.getView(loader.id).setVisibility(View.GONE);
-                }
+                loader.holder.getView(loader.id).setVisibility(loader.imageId == 0 ? View.GONE : View.VISIBLE);
                 break;
             case setAdapter:
                 ListView listView = findViewById(R.id.set_listView);

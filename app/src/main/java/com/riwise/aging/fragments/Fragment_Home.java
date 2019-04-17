@@ -1,5 +1,6 @@
 package com.riwise.aging.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
@@ -10,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import java.util.List;
 import io.reactivex.ObservableEmitter;
 
 import com.riwise.aging.R;
+import com.riwise.aging.activity.TestActivity;
 import com.riwise.aging.enums.IListListener;
 import com.riwise.aging.enums.ILoadListener;
 import com.riwise.aging.enums.LoadType;
@@ -29,7 +30,7 @@ import com.riwise.aging.info.setInfo.LoaderInfo;
 import com.riwise.aging.support.AsyncListView;
 import com.riwise.aging.support.ViewHolder;
 
-public class Fragment_Home extends Fragment_Base implements View.OnClickListener, IListListener, ILoadListener {
+public class Fragment_Home extends Fragment_Base implements IListListener, ILoadListener {
     private boolean isComplete;
     private LoadInfo error;
 
@@ -43,6 +44,19 @@ public class Fragment_Home extends Fragment_Base implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View messageLayout = inflater.inflate(R.layout.fragment_home, container, false);
         return messageLayout;
+    }
+
+    private void onClick(String text) {
+        switch (text) {
+            case "10个月老化模型":
+            case "18个月老化模型":
+            case "24个月老化模型":
+                Intent intent = new Intent(getActivity(), TestActivity.class);
+                //将text框中的值传入
+                intent.putExtra("title", text);
+                startActivity(intent);
+                return;
+        }
     }
 
     //去服务器下载数据
@@ -79,15 +93,10 @@ public class Fragment_Home extends Fragment_Base implements View.OnClickListener
                 listView.setAdapter(((AdapterInfo) info).adapter);
                 listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
                     //我们需要的内容，跳转页面或显示详细信息
-                    SetInfo gridInfo = (SetInfo) ((AdapterInfo) info).list.get(position);
+                    SetInfo setInfo = (SetInfo) ((AdapterInfo) info).list.get(position);
+                    onClick(setInfo.Message);
                 });
                 break;
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
         }
     }
 

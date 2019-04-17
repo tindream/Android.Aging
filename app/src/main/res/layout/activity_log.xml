@@ -15,7 +15,7 @@
         android:scrollX="3dp"
         android:theme="?attr/actionBarTheme"
         app:contentInsetStartWithNavigation="0dp"
-        app:navigationIcon="@drawable/ic_back_while"
+        app:navigationIcon="@drawable/ic_back"
         app:title="@string/app_name"
         app:titleMargin="0dp"
         app:titleTextColor="@color/While" />

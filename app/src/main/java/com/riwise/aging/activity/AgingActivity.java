@@ -4,24 +4,22 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.SeekBar;
 
 import com.riwise.aging.R;
 import com.riwise.aging.data.SQLiteServer;
-import com.riwise.aging.enums.LoadType;
 import com.riwise.aging.info.sqlInfo.AgingInfo;
 import com.riwise.aging.support.Cache;
 import com.riwise.aging.support.Config;
 import com.riwise.aging.support.Method;
 import com.riwise.aging.ui.ChildActivity;
 
-public class AgingSetActivity extends ChildActivity implements SeekBar.OnSeekBarChangeListener {
+public class AgingActivity extends ChildActivity implements SeekBar.OnSeekBarChangeListener {
     private AgingInfo info;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.layoutResID = R.layout.activity_agingset;
+        super.layoutResID = R.layout.activity_aging;
         super.onCreate(savedInstanceState);
         String title = getIntent().getStringExtra("title");
         toolbar.setTitle(title);
