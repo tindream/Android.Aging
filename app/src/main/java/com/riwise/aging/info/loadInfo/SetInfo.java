@@ -1,5 +1,6 @@
 package com.riwise.aging.info.loadInfo;
 
+import com.riwise.aging.R;
 import com.riwise.aging.enums.LoadType;
 import com.riwise.aging.support.Method;
 
@@ -11,6 +12,7 @@ public class SetInfo extends LoadInfo {
     public boolean iHeard;
     public String desc;
     public boolean noRight;
+    public int colorId;
 
     public SetInfo() {
         super(LoadType.none);
@@ -38,6 +40,12 @@ public class SetInfo extends LoadInfo {
             if (desc.length() > 12) desc = desc.substring(0, 12) + "...";
         }
         this.desc = desc;
+    }
+
+    public void updateTest(String desc, boolean loading, boolean complete) {
+        this.desc = desc;
+        this.colorId = loading ? R.color.colorPrimaryLight : R.color.Transparent;
+        this.imageId = complete ? R.drawable.ic_correct_dark : 0;
     }
 
     public SetInfo(String msg, String desc, boolean noRight) {

@@ -34,10 +34,11 @@
         android:textColor="@color/While"
         android:textSize="@dimen/text24" />
 
-    <TextView
+    <ProgressBar
+        android:id="@+id/test_progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorGray" />
+        android:layout_height="1dp" />
 
     <ListView
         android:id="@+id/test_listView"

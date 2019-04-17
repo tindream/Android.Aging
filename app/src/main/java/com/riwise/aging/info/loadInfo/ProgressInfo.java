@@ -4,10 +4,25 @@ import com.riwise.aging.enums.LoadType;
 
 public class ProgressInfo extends LoadInfo {
 
-    public int value;
+    public String name;
+    public String desc;
+    public int progress;
+    public boolean loading;
+    public boolean complete;
 
-    public ProgressInfo(int value) {
+    public ProgressInfo(String name, String desc, int progress) {
         super(LoadType.progress);
-        this.value = value;
+        this.name = name;
+        this.desc = desc;
+        this.progress = progress;
+        this.loading = true;
+    }
+
+    public ProgressInfo(String name, String desc) {
+        super(LoadType.progress);
+        this.name = name;
+        this.desc = desc;
+        this.loading = false;
+        this.complete = true;
     }
 }

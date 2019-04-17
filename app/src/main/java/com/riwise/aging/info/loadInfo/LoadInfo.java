@@ -22,7 +22,7 @@ public class LoadInfo {
     public String getMsg() {
         String desc = Types + "";
         if (Message != null) {
-            if (Types == LoadType.Error) desc += "\n";
+            if (Types == LoadType.error) desc += "\n";
             else desc += "\t";
             desc += Message;
         }

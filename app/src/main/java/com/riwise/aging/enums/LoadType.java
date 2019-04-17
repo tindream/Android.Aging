@@ -2,20 +2,21 @@ package com.riwise.aging.enums;
 
 public enum LoadType {
     none,
-    Error,
+    error,
 
     setText,
     setImageId,
     setAdapter,
     setLine,
     setNoRight,
+    setBackColor,
 
     load,
     complete,
     progress,
     cancel,
     confirm,
-    time,
 
+    aging,
     home,
 }

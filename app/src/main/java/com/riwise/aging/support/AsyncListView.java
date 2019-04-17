@@ -18,7 +18,6 @@ import com.riwise.aging.info.setInfo.LoaderInfo;
 
 public class AsyncListView extends AsyncBase {
     protected IListListener listListener;
-    private Context context;
 
     protected <T> void onListener(ObservableEmitter<LoadInfo> emitter, ViewHolder holder, T object) {
         try {
@@ -36,7 +35,6 @@ public class AsyncListView extends AsyncBase {
     }
 
     public <T> void init(Context context, List<T> list, int resId) {
-        this.context = context;
         new AsyncAdapter().setListener((emitter, info) -> {
             MyAdapter<T> myAdapter1 = new MyAdapter<T>(context, resId, list) {
                 @Override

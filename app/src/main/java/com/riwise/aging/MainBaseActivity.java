@@ -55,7 +55,7 @@ public class MainBaseActivity extends BaseActivity implements ILoadListener {
             case load:
                 onReady(new LoadInfo(LoadType.home));
                 break;
-            case Error:
+            case error:
                 Fragment_Home fragment_home = (Fragment_Home) fragmentList.get(0);
                 fragment_home.error(info);
                 break;
