@@ -12,13 +12,10 @@ public class View_About extends View_Base {
     public void show() {
         super.show();
 
-        TextView textView = view_custom.findViewById(R.id.about_title);
-        textView.setText(R.string.btn_about);
-
         String desc = "Version：" + activity.getString(R.string.version);
         SpannableString span = new SpannableString(desc);
         span.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorPrimary)), 8, desc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView = view_custom.findViewById(R.id.id_msg);
+        TextView  textView = view_custom.findViewById(R.id.id_msg);
         textView.setText(span); //更新UI
     }
 

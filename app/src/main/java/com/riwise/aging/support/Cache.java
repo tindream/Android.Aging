@@ -21,10 +21,10 @@ public class Cache {
         return FindInfo(AgingList, id);
     }
 
-    public static AgingInfo FindAging(String name) {
+    public static AgingInfo FindAging(String name, boolean i32) {
         for (int i = 0; i < AgingList.size(); i++) {
             AgingInfo info = AgingList.get(i);
-            if (info.Name == name) return info;
+            if (info.Name.equals(name) && info.I32 == i32) return info;
         }
         return new AgingInfo(name);
     }

@@ -56,8 +56,8 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
             File sdcard = Environment.getExternalStorageDirectory();//得到sdcard的目录作为一个文件对象
             long usableSpace = sdcard.getUsableSpace();//获取文件目录对象剩余空间
             long totalSpace = sdcard.getTotalSpace();
-            boolean i32 = totalSpace > 1024 * 1024 * 1024 * 32;
-            list.add(new SetInfo("内置SD卡 " + (i32 ? ">" : "=") + " 32G", true));
+            Config.I32 = totalSpace < 1024 * 1024 * 1024 * 32;
+            list.add(new SetInfo("内置SD卡 " + (Config.I32 ? "=" : ">") + " 32G", true));
             list.add(new SetInfo());
         } else {
             list.add(new SetInfo("SD卡未挂载"));
@@ -91,38 +91,39 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
             List<String> list = data.getStringArrayListExtra("paths");
             String path = list.size() > 0 ? list.get(0) : null;
             String name = null;
+            SQLiteServer server = new SQLiteServer();
             if (requestCode == getCode(FileType.Images)) {
                 name = FileType.Images;
                 Config.Admin.Images = path;
-                new SQLiteServer().updateAdmin("Images", Config.Admin.Images);
+                server.updateAdmin("Images", Config.Admin.Images);
             } else if (requestCode == getCode(FileType.Audios)) {
                 name = FileType.Audios;
                 Config.Admin.Audios = path;
-                new SQLiteServer().updateAdmin("Audios", Config.Admin.Audios);
-            } else if (requestCode ==getCode(FileType.Videos)) {
+                server.updateAdmin("Audios", Config.Admin.Audios);
+            } else if (requestCode == getCode(FileType.Videos)) {
                 name = FileType.Videos;
                 Config.Admin.Videos = path;
-                new SQLiteServer().updateAdmin("Videos", Config.Admin.Videos);
+                server.updateAdmin("Videos", Config.Admin.Videos);
             } else if (requestCode == getCode(FileType.Contacts)) {
                 name = FileType.Contacts;
                 Config.Admin.Contacts = path;
-                new SQLiteServer().updateAdmin("Contacts", Config.Admin.Contacts);
+                server.updateAdmin("Contacts", Config.Admin.Contacts);
             } else if (requestCode == getCode(FileType.Apps)) {
                 name = FileType.Apps;
                 Config.Admin.Apps = path;
-                new SQLiteServer().updateAdmin("Apps", Config.Admin.Apps);
+                server.updateAdmin("Apps", Config.Admin.Apps);
             } else if (requestCode == getCode(FileType.File4s)) {
                 name = FileType.File4s;
                 Config.Admin.File4s = path;
-                new SQLiteServer().updateAdmin("File4s", Config.Admin.File4s);
+                server.updateAdmin("File4s", Config.Admin.File4s);
             } else if (requestCode == getCode(FileType.File8s)) {
                 name = FileType.File8s;
                 Config.Admin.File8s = path;
-                new SQLiteServer().updateAdmin("File8s", Config.Admin.File8s);
+                server.updateAdmin("File8s", Config.Admin.File8s);
             } else if (requestCode == getCode(FileType.File128s)) {
                 name = FileType.File128s;
                 Config.Admin.File128s = path;
-                new SQLiteServer().updateAdmin("File128s", Config.Admin.File128s);
+                server.updateAdmin("File128s", Config.Admin.File128s);
             }
             ListView listView = findViewById(R.id.set_listView);
             MyAdapter info = (MyAdapter) listView.getAdapter();

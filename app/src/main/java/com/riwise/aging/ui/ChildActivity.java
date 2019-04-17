@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -49,6 +50,11 @@ public class ChildActivity extends AppCompatActivity {
         if (view instanceof TextView) {
             ((TextView) view).setText(value.toString());
         }
+    }
+
+    protected int getSeekBar(int id) {
+        SeekBar view = findViewById(id);
+        return view.getProgress();
     }
 
     @Override

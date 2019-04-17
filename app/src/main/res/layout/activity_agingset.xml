@@ -20,14 +20,37 @@
         app:titleMargin="0dp"
         app:titleTextColor="@color/While" />
 
-    <TextView
-        android:id="@+id/aging_title"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="30dp"
-        android:text="@string/app_name"
-        android:textAlignment="center"
-        android:textSize="@dimen/text24" />
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="sans-serif"
+            android:minWidth="70dp"
+            android:paddingLeft="10dp"
+            android:text="剩余空间"
+            android:textSize="@dimen/text16" />
+
+        <EditText
+            android:id="@+id/aging_last"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/desc_load"
+            android:inputType="numberDecimal"
+            android:paddingLeft="95dp"
+            android:theme="@style/MyEditText" />
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="碎片化"
+        android:textSize="@dimen/text14" />
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -41,17 +64,28 @@
             android:fontFamily="sans-serif"
             android:minWidth="70dp"
             android:paddingLeft="10dp"
-            android:text="@string/desc_load"
+            android:text="4K文件"
             android:textSize="@dimen/text16" />
 
-        <EditText
-            android:id="@+id/aging_user"
+        <SeekBar
+            android:id="@+id/aging_4K"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/desc_load"
-            android:inputType="textPersonName"
-            android:paddingLeft="80dp"
-            android:theme="@style/MyEditText" />
+            android:layout_marginLeft="85dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="20dp"
+            android:progress="40" />
+
+        <TextView
+            android:id="@+id/aging_4Ks"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:fontFamily="sans-serif"
+            android:minWidth="70dp"
+            android:paddingLeft="10dp"
+            android:text="100"
+            android:textSize="@dimen/text16" />
 
     </FrameLayout>
 
@@ -67,32 +101,268 @@
             android:fontFamily="sans-serif"
             android:minWidth="70dp"
             android:paddingLeft="10dp"
-            android:text="@string/desc_load"
+            android:text="8K文件"
             android:textSize="@dimen/text16" />
 
-        <EditText
-            android:id="@+id/aging_pad"
+        <SeekBar
+            android:id="@+id/aging_8K"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/desc_load"
-            android:inputType="textPassword"
-            android:paddingLeft="80dp"
-            android:theme="@style/MyEditText" />
+            android:layout_marginLeft="85dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:id="@+id/aging_8Ks"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:fontFamily="sans-serif"
+            android:minWidth="70dp"
+            android:paddingLeft="10dp"
+            android:text="0"
+            android:textSize="@dimen/text16" />
+
+    </FrameLayout>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="sans-serif"
+            android:minWidth="70dp"
+            android:paddingLeft="10dp"
+            android:text="128K文件"
+            android:textSize="@dimen/text16" />
+
+        <SeekBar
+            android:id="@+id/aging_128K"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="85dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="20dp" />
+
+        <TextView
+            android:id="@+id/aging_128Ks"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:fontFamily="sans-serif"
+            android:minWidth="70dp"
+            android:paddingLeft="10dp"
+            android:text="0"
+            android:textSize="@dimen/text16" />
 
     </FrameLayout>
 
     <TextView
-        android:id="@+id/aging_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/selector_stroke_radiu_primary"
-        android:padding="11dp"
-        android:text="@string/desc_load"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="@color/While"
-        android:textSize="@dimen/text18" />
+        android:text="资源"
+        android:textSize="@dimen/text14" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarSize="@dimen/scrollbarSize"
+        android:scrollbarThumbVertical="@color/colorPrimary">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:minWidth="70dp"
+                    android:paddingLeft="10dp"
+                    android:text="图片"
+                    android:textSize="@dimen/text16" />
+
+                <EditText
+                    android:id="@+id/aging_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/desc_load"
+                    android:inputType="number"
+                    android:paddingLeft="95dp"
+                    android:theme="@style/MyEditText" />
+
+            </FrameLayout>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:minWidth="70dp"
+                    android:paddingLeft="10dp"
+                    android:text="音频"
+                    android:textSize="@dimen/text16" />
+
+                <EditText
+                    android:id="@+id/aging_audio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/desc_load"
+                    android:inputType="number"
+                    android:paddingLeft="95dp"
+                    android:theme="@style/MyEditText" />
+
+            </FrameLayout>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:minWidth="70dp"
+                    android:paddingLeft="10dp"
+                    android:text="视频"
+                    android:textSize="@dimen/text16" />
+
+                <EditText
+                    android:id="@+id/aging_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/desc_load"
+                    android:inputType="number"
+                    android:paddingLeft="95dp"
+                    android:theme="@style/MyEditText" />
+
+            </FrameLayout>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:minWidth="70dp"
+                    android:paddingLeft="10dp"
+                    android:text="联系人"
+                    android:textSize="@dimen/text16" />
+
+                <EditText
+                    android:id="@+id/aging_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/desc_load"
+                    android:inputType="number"
+                    android:paddingLeft="95dp"
+                    android:theme="@style/MyEditText" />
+
+            </FrameLayout>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:minWidth="70dp"
+                    android:paddingLeft="10dp"
+                    android:text="信息"
+                    android:textSize="@dimen/text16" />
+
+                <EditText
+                    android:id="@+id/aging_sms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/desc_load"
+                    android:inputType="number"
+                    android:paddingLeft="95dp"
+                    android:theme="@style/MyEditText" />
+
+            </FrameLayout>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:minWidth="70dp"
+                    android:paddingLeft="10dp"
+                    android:text="通话记录"
+                    android:textSize="@dimen/text16" />
+
+                <EditText
+                    android:id="@+id/aging_call"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/desc_load"
+                    android:inputType="number"
+                    android:paddingLeft="95dp"
+                    android:theme="@style/MyEditText" />
+
+            </FrameLayout>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:minWidth="70dp"
+                    android:paddingLeft="10dp"
+                    android:text="三方应用"
+                    android:textSize="@dimen/text16" />
+
+                <EditText
+                    android:id="@+id/aging_app"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/desc_load"
+                    android:inputType="number"
+                    android:paddingLeft="95dp"
+                    android:theme="@style/MyEditText" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

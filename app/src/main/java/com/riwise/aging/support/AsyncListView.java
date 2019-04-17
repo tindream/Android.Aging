@@ -24,8 +24,8 @@ public class AsyncListView extends AsyncBase {
         try {
             if (listListener != null)
                 listListener.onReady(emitter, holder, object);
-        } catch (Exception ex) {
-            Method.log(ex);
+        } catch (Exception e) {
+            Method.log(e);
         }
     }
 
