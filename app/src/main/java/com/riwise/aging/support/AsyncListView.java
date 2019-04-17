@@ -8,6 +8,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import io.reactivex.ObservableEmitter;
+
 import com.riwise.aging.R;
 import com.riwise.aging.enums.IListListener;
 import com.riwise.aging.enums.ILoadListener;
@@ -60,14 +61,9 @@ public class AsyncListView extends AsyncBase {
                 LoaderInfo loader = (LoaderInfo) info;
                 loader.holder.setText(loader.id, loader.msg);
                 break;
-            case setImage:
-                loader = (LoaderInfo) info;
-                ImageView imageView = loader.holder.getView(loader.id);
-                Picasso.with(context).load(loader.file).placeholder(R.drawable.ic_icon).into(imageView);
-                break;
             case setImageId:
                 loader = (LoaderInfo) info;
-                imageView = loader.holder.getView(loader.id);
+                ImageView imageView = loader.holder.getView(loader.id);
                 if (loader.imageId != 0)
                     imageView.setImageDrawable(Config.context.getDrawable(loader.imageId));
                 break;

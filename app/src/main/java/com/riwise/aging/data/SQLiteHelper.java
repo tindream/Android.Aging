@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.ContactsContract;
 
+import com.riwise.aging.info.sqlInfo.AgingInfo;
 import com.riwise.aging.support.Config;
 import com.riwise.aging.support.Method;
 
@@ -21,9 +23,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 ", Name nvarchar, Value nvarchar, DateTime datetime, unique(Id asc));");
         db.execSQL("create index main.admin_id on Admins (Id ASC);");
 
-        db.execSQL("create table Goods(Id integer not null" +
-                ", [Index] int, Name nvarchar, Price double, Quantity double, unique(Id asc));");
-        db.execSQL("create index main.Goods_id on Goods (Id ASC);");
+        db.execSQL("create table Agings(Id integer primary key autoincrement not null" +
+                ", Name nvarchar,I32 bit, Last double, Image int, Audio int, Video int, Contact int, Sms int" +
+                ", Call int, App int, File4 int, File8 int, File128 int, unique(Id asc));");
+        db.execSQL("create index main.Agings_id on Agings(Id ASC);");
     }
 
     public void loadUpdate() {
@@ -33,7 +36,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     private void update1() {
-        exec("alter table Goods add UserId integer");
+        exec("alter table Agings add UserId integer");
         Config.Admin.Version = 1;
         updateAdmin("Version", Config.Admin.Version);
     }

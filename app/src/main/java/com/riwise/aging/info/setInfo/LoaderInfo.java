@@ -11,7 +11,6 @@ public class LoaderInfo extends LoadInfo {
     public ViewHolder holder;
     public int id;
     public String msg;
-    public File file;
     public int imageId;
 
     public LoaderInfo(LoadType type, ViewHolder holder) {
@@ -27,11 +26,6 @@ public class LoaderInfo extends LoadInfo {
     public LoaderInfo(LoadType type, ViewHolder holder, int id, String msg) {
         this(type, holder, id);
         this.msg = msg;
-    }
-
-    public LoaderInfo(LoadType type, ViewHolder holder, int id, File file) {
-        this(type, holder, id);
-        this.file = file;
     }
 
     public LoaderInfo(LoadType type, ViewHolder viewHolder, int id, int imageId) {

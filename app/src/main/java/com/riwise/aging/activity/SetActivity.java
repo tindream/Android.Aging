@@ -23,6 +23,7 @@ import com.riwise.aging.info.loadInfo.SetInfo;
 import com.riwise.aging.info.setInfo.AdapterInfo;
 import com.riwise.aging.info.setInfo.LoaderInfo;
 import com.riwise.aging.support.AsyncListView;
+import com.riwise.aging.support.Cache;
 import com.riwise.aging.support.Config;
 import com.riwise.aging.support.Method;
 import com.riwise.aging.support.MyAdapter;
@@ -36,7 +37,6 @@ import java.util.List;
 import io.reactivex.ObservableEmitter;
 
 public class SetActivity extends ChildActivity implements IListListener, ILoadListener {
-    int REQUESTCODE_FROM_ACTIVITY = 1000;
     String sdPath;
 
     @Override
@@ -49,7 +49,6 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
             Method.hit("外置SD卡不存在, 将使用内置SD卡");
             sdPath = Environment.getExternalStorageDirectory().getPath();
         }
-
         List<SetInfo> list = new ArrayList();
         list.add(new SetInfo());
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -63,25 +62,25 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         } else {
             list.add(new SetInfo("SD卡未挂载"));
         }
+        list.add(new SetInfo(getString(R.string.btn_10)));
+        list.add(new SetInfo(getString(R.string.btn_18)));
+        list.add(new SetInfo(getString(R.string.btn_24)));
+        list.add(new SetInfo());
 
         list.add(new SetInfo(FileType.Images, Config.Admin.Images));
         list.add(new SetInfo(FileType.Audios, Config.Admin.Audios));
         list.add(new SetInfo(FileType.Videos, Config.Admin.Videos));
         list.add(new SetInfo(FileType.Contacts, Config.Admin.Contacts));
-        list.add(new SetInfo(FileType.Smss, Config.Admin.Smss));
-        list.add(new SetInfo(FileType.Calls, Config.Admin.Calls));
         list.add(new SetInfo(FileType.Apps, Config.Admin.Apps));
         list.add(new SetInfo(FileType.File4s, Config.Admin.File4s));
         list.add(new SetInfo(FileType.File8s, Config.Admin.File8s));
         list.add(new SetInfo(FileType.File128s, Config.Admin.File128s));
 
         list.add(new SetInfo());
-        list.add(new SetInfo(getString(R.string.btn_10)));
-        list.add(new SetInfo(getString(R.string.btn_18)));
-        list.add(new SetInfo(getString(R.string.btn_24)));
-        list.add(new SetInfo());
         list.add(new SetInfo(getString(R.string.btn_log)));
         list.add(new SetInfo(getString(R.string.btn_about), getString(R.string.version), true));
+        list.add(new SetInfo());
+        list.add(new SetInfo());
         new AsyncListView().setListener(this, this).init(this, list, R.layout.item_set);
     }
 
@@ -91,59 +90,39 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         if (resultCode == RESULT_OK) {
             List<String> list = data.getStringArrayListExtra("paths");
             String path = list.size() > 0 ? list.get(0) : null;
-            int code = requestCode - REQUESTCODE_FROM_ACTIVITY;
             String name = null;
-            switch (code) {
-                case FileType.Image:
-                    name = FileType.Images;
-                    Config.Admin.Images = path;
-                    new SQLiteServer().updateAdmin("Images", Config.Admin.Images);
-                    break;
-                case FileType.Audio:
-                    name = FileType.Audios;
-                    Config.Admin.Audios = path;
-                    new SQLiteServer().updateAdmin("Audios", Config.Admin.Audios);
-                    break;
-                case FileType.Video:
-                    name = FileType.Videos;
-                    Config.Admin.Videos = path;
-                    new SQLiteServer().updateAdmin("Videos", Config.Admin.Videos);
-                    break;
-                case FileType.Contact:
-                    name = FileType.Contacts;
-                    Config.Admin.Contacts = path;
-                    new SQLiteServer().updateAdmin("Contacts", Config.Admin.Contacts);
-                    break;
-                case FileType.Sms:
-                    name = FileType.Smss;
-                    Config.Admin.Smss = path;
-                    new SQLiteServer().updateAdmin("Smss", Config.Admin.Smss);
-                    break;
-                case FileType.Call:
-                    name = FileType.Calls;
-                    Config.Admin.Calls = path;
-                    new SQLiteServer().updateAdmin("Calls", Config.Admin.Calls);
-                    break;
-                case FileType.App:
-                    name = FileType.Apps;
-                    Config.Admin.Apps = path;
-                    new SQLiteServer().updateAdmin("Apps", Config.Admin.Apps);
-                    break;
-                case FileType.File4:
-                    name = FileType.File4s;
-                    Config.Admin.File4s = path;
-                    new SQLiteServer().updateAdmin("File4s", Config.Admin.File4s);
-                    break;
-                case FileType.File8:
-                    name = FileType.File8s;
-                    Config.Admin.File8s = path;
-                    new SQLiteServer().updateAdmin("File8s", Config.Admin.File8s);
-                    break;
-                case FileType.File128:
-                    name = FileType.File128s;
-                    Config.Admin.File128s = path;
-                    new SQLiteServer().updateAdmin("File128s", Config.Admin.File128s);
-                    break;
+            if (requestCode == getCode(FileType.Images)) {
+                name = FileType.Images;
+                Config.Admin.Images = path;
+                new SQLiteServer().updateAdmin("Images", Config.Admin.Images);
+            } else if (requestCode == getCode(FileType.Audios)) {
+                name = FileType.Audios;
+                Config.Admin.Audios = path;
+                new SQLiteServer().updateAdmin("Audios", Config.Admin.Audios);
+            } else if (requestCode ==getCode(FileType.Videos)) {
+                name = FileType.Videos;
+                Config.Admin.Videos = path;
+                new SQLiteServer().updateAdmin("Videos", Config.Admin.Videos);
+            } else if (requestCode == getCode(FileType.Contacts)) {
+                name = FileType.Contacts;
+                Config.Admin.Contacts = path;
+                new SQLiteServer().updateAdmin("Contacts", Config.Admin.Contacts);
+            } else if (requestCode == getCode(FileType.Apps)) {
+                name = FileType.Apps;
+                Config.Admin.Apps = path;
+                new SQLiteServer().updateAdmin("Apps", Config.Admin.Apps);
+            } else if (requestCode == getCode(FileType.File4s)) {
+                name = FileType.File4s;
+                Config.Admin.File4s = path;
+                new SQLiteServer().updateAdmin("File4s", Config.Admin.File4s);
+            } else if (requestCode == getCode(FileType.File8s)) {
+                name = FileType.File8s;
+                Config.Admin.File8s = path;
+                new SQLiteServer().updateAdmin("File8s", Config.Admin.File8s);
+            } else if (requestCode == getCode(FileType.File128s)) {
+                name = FileType.File128s;
+                Config.Admin.File128s = path;
+                new SQLiteServer().updateAdmin("File128s", Config.Admin.File128s);
             }
             ListView listView = findViewById(R.id.set_listView);
             MyAdapter info = (MyAdapter) listView.getAdapter();
@@ -159,86 +138,71 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         }
     }
 
+    private int getCode(String text) {
+        int code = text.hashCode();
+        while (code > 65535) code /= 2;
+        return code;
+    }
+
     private void onClick(String text) {
-        if (Method.isEmpty(sdPath)) {
-            Method.hit("外置SD卡不存在");
-            return;
+        switch (text) {
+            case "10个月老化模型":
+            case "18个月老化模型":
+            case "24个月老化模型":
+                Intent intent = new Intent(this, AgingSetActivity.class);
+                //将text框中的值传入
+                intent.putExtra("title", text);
+                startActivity(intent);
+                return;
         }
         LFilePicker picker = new LFilePicker()
                 .withActivity(this)
                 .withTitle(text)
                 .withMutilyMode(false);
-        int code = REQUESTCODE_FROM_ACTIVITY;
         String path = null;
         switch (text) {
             case FileType.Images:
-                code += FileType.Image;
                 path = Config.Admin.Images;
                 break;
             case FileType.Audios:
-                code += FileType.Audio;
                 path = Config.Admin.Audios;
                 break;
             case FileType.Videos:
-                code += FileType.Video;
                 path = Config.Admin.Videos;
                 break;
             case FileType.Contacts:
-                code += FileType.Contact;
                 path = Config.Admin.Contacts;
                 break;
-            case FileType.Smss:
-                code += FileType.Sms;
-                path = Config.Admin.Smss;
-                break;
-            case FileType.Calls:
-                code += FileType.Call;
-                path = Config.Admin.Calls;
-                break;
             case FileType.Apps:
-                code += FileType.App;
                 path = Config.Admin.Apps;
                 break;
             case FileType.File4s:
-                code += FileType.File4;
                 path = Config.Admin.File4s;
                 break;
             case FileType.File8s:
-                code += FileType.File8;
                 path = Config.Admin.File8s;
                 break;
             case FileType.File128s:
-                code += FileType.File128;
                 path = Config.Admin.File128s;
                 break;
         }
         if (Method.isEmpty(path)) path = sdPath;
         else path = new File(path).getParent();
-        picker = picker.withStartPath(path).withRequestCode(code);
+        int code = getCode(text);
+        picker = picker.withRequestCode(code).withStartPath(path);
         switch (text) {
             case FileType.Images:
-                picker.start();
-//                picker.withFileFilter(new String[]{".jpg", ".png", ".bmp"}).start();
-                break;
             case FileType.Audios:
-                picker.start();
-//                picker.withFileFilter(new String[]{".avi", ".mp4", ".wav"}).start();
-                break;
             case FileType.Videos:
                 picker.start();
-//                picker.withFileFilter(new String[]{".avi", ".mp4", ".rmvb", ".wmv"}).start();
                 break;
             case FileType.Contacts:
-                picker.withFileFilter(new String[]{".csv"}).start();
-                break;
-            case FileType.Smss:
-                picker.withFileFilter(new String[]{".csv"}).start();
-                break;
-            case FileType.Calls:
-                picker.withFileFilter(new String[]{".csv"}).start();
+                picker.start();
+//                picker.withFileFilter(new String[]{".vcf"}).start();
                 break;
             case FileType.Apps:
-                picker.withFileFilter(new String[]{".apk"}).start();
+                picker.start();
+//                picker.withFileFilter(new String[]{".apk"}).start();
                 break;
             case FileType.File4s:
             case FileType.File8s:

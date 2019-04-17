@@ -12,7 +12,7 @@ public class TimeInfo extends LoadInfo {
     public long time;
 
     public TimeInfo(long time) {
-        this.Types = LoadType.time;
+        super(LoadType.time);
         this.time = time;
     }
 }

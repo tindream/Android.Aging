@@ -1,7 +1,5 @@
 package com.riwise.aging.data;
 
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -12,12 +10,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.ObservableEmitter;
+
+import com.riwise.aging.R;
 import com.riwise.aging.enums.ILoadSync;
 import com.riwise.aging.enums.LoadType;
 import com.riwise.aging.info.loadInfo.LoadInfo;
 import com.riwise.aging.info.sqlInfo.AdminBaseInfo;
 import com.riwise.aging.info.sqlInfo.AdminInfo;
-import com.riwise.aging.info.sqlInfo.GoodInfo;
+import com.riwise.aging.info.sqlInfo.AgingInfo;
 import com.riwise.aging.support.Cache;
 import com.riwise.aging.support.Config;
 import com.riwise.aging.support.ConverHelper;
@@ -34,12 +34,38 @@ public class SQLiteServer {
         loadAdmin();
         dbHelper.loadUpdate();
         emitter.onNext(new LoadInfo(LoadType.load));
-        Cache.GoodList = queryList(GoodInfo.class, new GoodInfo().getSql());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Cache.GoodList.sort(Comparator.naturalOrder());
+        Cache.AgingList = queryList(AgingInfo.class, new AgingInfo().getSql());
+        if (Cache.AgingList.size() == 0) {
+            addAging(Config.context.getString(R.string.btn_10), true, 2, 1000, 200, 20, 1000, 3000, 500, 50, 80, 15, 5);
+            addAging(Config.context.getString(R.string.btn_10), false, 5, 3000, 300, 30, 1000, 3000, 500, 60, 80, 15, 5);
+
+            addAging(Config.context.getString(R.string.btn_18), true, 2, 1500, 250, 25, 2000, 5400, 500, 55, 80, 15, 5);
+            addAging(Config.context.getString(R.string.btn_18), false, 3, 4500, 450, 45, 2000, 5400, 500, 80, 80, 15, 5);
+
+            addAging(Config.context.getString(R.string.btn_24), true, 1.5, 2000, 300, 30, 3000, 7200, 500, 60, 100, 0, 0);
+            addAging(Config.context.getString(R.string.btn_24), false, 2, 5400, 540, 54, 3000, 7200, 500, 100, 100, 0, 0);
         }
-        Method.log("Load本地完成");
+        Method.log("Load Completed");
         emitter.onNext(new LoadInfo(LoadType.complete));
+    }
+
+    private void addAging(String name, boolean i32, double last, int image, int audio, int video, int contact, int sms, int call, int app, int file4, int file8, int file128) throws Exception {
+        AgingInfo info = new AgingInfo();
+        info.Name = name;
+        info.I32 = i32;
+        info.Last = last;
+        info.Image = image;
+        info.Audio = audio;
+        info.Video = video;
+        info.Contact = contact;
+        info.Sms = sms;
+        info.Call = call;
+        info.App = app;
+        info.File4 = file4;
+        info.File8 = file8;
+        info.File128 = file128;
+        insert(info);
+        Cache.AgingList.add(info);
     }
 
     public void loadAdmin() throws Exception {
@@ -57,135 +83,30 @@ public class SQLiteServer {
         }
     }
 
-    public <T extends ILoadSync> void insert(List<T> sqlList, List<T> sqliteList, Class type) throws Exception {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public <T extends ILoadSync> void insert(T info) throws Exception {
+        SQLiteDatabase db = null;
         try {
-            db.beginTransaction();
-            for (int i = sqlList.size() - 1; i >= 0; i--) {
-                T temp = sqlList.get(i);
-                //add
-                T info = (T) type.newInstance();
-                ConverHelper.setValue(info, temp);
-                sqliteList.add(info);
-                db.insert(info.getTable(), null, ConverHelper.getValues(info));
-            }
+            db = dbHelper.getReadableDatabase();
+           long id= db.insert(info.getTable(), null, ConverHelper.getValues(info));
+           info.setId(id);
         } finally {
-            //显示的设置数据事务是否成功
-            db.setTransactionSuccessful();
-            db.endTransaction();
-            db.close();
+            if (db != null) db.close();
         }
     }
 
-    public <T extends ILoadSync> void update(List<T> sqlList, List<T> sqliteList, Class type) throws Exception {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
+    public <T extends ILoadSync> void update(T info) throws Exception {
+        SQLiteDatabase db = null;
         try {
-            db.beginTransaction();
-            for (int i = 0; i < sqliteList.size(); i++) {
-                T info = sqliteList.get(i);
-                int index = sqlList.indexOf(info);
-                if (index > -1) {
-                    T temp = sqlList.get(index);
-                    if (!ConverHelper.iEquals(temp, info)) {
-                        //update
-                        ConverHelper.setValue(info, temp);
-                        info.reLoad();
-                        String[] args = {info.getId() + ""};
-                        db.update(temp.getTable(), ConverHelper.getValues(temp), "id=?", args);
-                    }
-                }
-            }
+            db = dbHelper.getReadableDatabase();
+            String[] args = {info.getId() + ""};
+            db.update(info.getTable(), ConverHelper.getValues(info), "id=?", args);
         } finally {
-            //显示的设置数据事务是否成功
-            db.setTransactionSuccessful();
-            db.endTransaction();
-            db.close();
-        }
-    }
-
-    public <T extends ILoadSync> void sync(List<T> sqlList, List<T> sqliteList, Class type) throws Exception {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        try {
-            db.beginTransaction();
-            for (int i = 0; i < sqlList.size(); i++) {
-                sqlList.get(i).setUpdate(true);
-            }
-            for (int i = 0; i < sqliteList.size(); i++) {
-                sqliteList.get(i).setUpdate(true);
-            }
-            for (int i = 0; i < sqliteList.size(); i++) {
-                T info = sqliteList.get(i);
-                int index = sqlList.indexOf(info);
-                if (index > -1) {
-                    T temp = sqlList.get(index);
-                    info.setUpdate(false);
-                    temp.setUpdate(false);
-                    if (!ConverHelper.iEquals(temp, info)) {
-                        //update
-                        ConverHelper.setValue(info, temp);
-                        info.reLoad();
-                        String[] args = {info.getId() + ""};
-                        db.update(temp.getTable(), ConverHelper.getValues(temp), "id=?", args);
-                    }
-                }
-            }
-            for (int i = sqliteList.size() - 1; i >= 0; i--) {
-                T info = sqliteList.get(i);
-                if (info.getUpdate()) {
-                    //delete
-                    String[] args = {info.getId() + ""};
-                    db.delete(info.getTable(), "id=?", args);
-                    sqliteList.remove(i);
-                }
-            }
-            for (int i = sqlList.size() - 1; i >= 0; i--) {
-                T temp = sqlList.get(i);
-                if (temp.getUpdate()) {
-                    //add
-                    T info = (T) type.newInstance();
-                    ConverHelper.setValue(info, temp);
-                    sqliteList.add(info);
-                    db.insert(info.getTable(), null, ConverHelper.getValues(info));
-                }
-            }
-        } finally {
-            //显示的设置数据事务是否成功
-            db.setTransactionSuccessful();
-            db.endTransaction();
-            db.close();
+            if (db != null) db.close();
         }
     }
 
     public void updateAdmin(String name, Object value) {
         dbHelper.updateAdmin(name, value);
-    }
-
-    public void execSQL(String sql) {
-        SQLiteDatabase db = null;
-        try {
-            db = dbHelper.getReadableDatabase();
-            db.execSQL(sql);
-        } finally {
-            if (db != null) db.close();
-        }
-    }
-
-    public <T extends ILoadSync> T query(Class<T> type, String sql) throws Exception {
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        try {
-            db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery(sql, null);
-            if (cursor.moveToFirst()) {
-                T info = (T) type.newInstance();
-                info.setValue(cursor);
-                return info;
-            }
-            return null;
-        } finally {
-            if (cursor != null) cursor.close();
-            if (db != null) db.close();
-        }
     }
 
     public <T extends ILoadSync> List<T> queryList(Class<T> type, String sql) throws Exception {

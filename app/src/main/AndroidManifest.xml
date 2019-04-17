@@ -30,6 +30,10 @@
             android:name=".activity.SetActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".activity.AgingSetActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

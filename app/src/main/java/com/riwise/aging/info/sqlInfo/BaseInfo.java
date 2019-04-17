@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 public class BaseInfo implements Comparable<BaseInfo> {
     public long Id;
 
-    private boolean iUpdate;
-
     public BaseInfo() {
     }
 
@@ -27,18 +25,11 @@ public class BaseInfo implements Comparable<BaseInfo> {
         return Id == info.Id;
     }
 
-    public boolean getUpdate() {
-        return iUpdate;
-    }
-
-    public void setUpdate(boolean value) {
-        iUpdate = value;
-    }
-
     public long getId() {
         return Id;
     }
 
-    public void reLoad() {
+    public void setId(long id) {
+        Id = id;
     }
 }

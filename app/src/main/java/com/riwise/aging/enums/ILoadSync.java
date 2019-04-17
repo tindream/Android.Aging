@@ -13,9 +13,5 @@ public interface ILoadSync {
 
     long getId();
 
-    boolean getUpdate();
-
-    void setUpdate(boolean value);
-
-    void reLoad();
+    void setId(long id);
 }

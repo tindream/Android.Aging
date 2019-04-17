@@ -8,8 +8,7 @@ public class ErrorEventInfo extends LoadInfo {
     public LoadType FromTypes;
 
     public ErrorEventInfo(LoadType from, String msg) {
-        super(LoadType.Error);
+        super(LoadType.Error, msg);
         this.FromTypes = from;
-        this.Message = msg;
     }
 }

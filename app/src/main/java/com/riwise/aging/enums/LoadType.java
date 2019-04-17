@@ -2,12 +2,9 @@ package com.riwise.aging.enums;
 
 public enum LoadType {
     none,
-    cancel,
-    confirm,
     Error,
 
     setText,
-    setImage,
     setImageId,
     setAdapter,
     setLine,
@@ -16,7 +13,9 @@ public enum LoadType {
     load,
     complete,
     progress,
+    cancel,
+    confirm,
     time,
-    home,
 
+    home,
 }

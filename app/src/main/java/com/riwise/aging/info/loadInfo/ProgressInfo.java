@@ -7,7 +7,7 @@ public class ProgressInfo extends LoadInfo {
     public int value;
 
     public ProgressInfo(int value) {
-        this.Types = LoadType.progress;
+        super(LoadType.progress);
         this.value = value;
     }
 }

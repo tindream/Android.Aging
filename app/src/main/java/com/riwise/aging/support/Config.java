@@ -9,11 +9,12 @@ import java.io.File;
 import java.util.Currency;
 import java.util.Locale;
 
+import com.riwise.aging.R;
 import com.riwise.aging.info.sqlInfo.AdminInfo;
 import com.riwise.aging.view.View_Base;
 
 public class Config {
-    public static final String Text = "aging";
+    public static final String Text = "Aging";
     public static final String Loading = "Loading...";
 
     public static AdminInfo Admin = new AdminInfo();

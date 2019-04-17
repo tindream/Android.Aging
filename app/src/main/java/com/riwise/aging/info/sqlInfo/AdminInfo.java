@@ -12,8 +12,6 @@ public class AdminInfo {
     public String Audios;
     public String Videos;
     public String Contacts;
-    public String Smss;
-    public String Calls;
     public String Apps;
     public String File4s;
     public String File8s;
