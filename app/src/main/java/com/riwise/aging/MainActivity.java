@@ -11,7 +11,7 @@ import com.riwise.aging.support.Config;
 import com.riwise.aging.support.CrashHandlers;
 import com.riwise.aging.support.Method;
 
-public class MainActivity extends MainBaseActivity implements View.OnClickListener {
+public class MainActivity extends MainBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Config.load(this);
@@ -37,13 +37,6 @@ public class MainActivity extends MainBaseActivity implements View.OnClickListen
             case home:
                 vp.setCurrentItem(0, false);
                 break;
-        }
-    }
-
-    //PopupWindow的监听回调事件
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
         }
     }
 }

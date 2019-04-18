@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 
 import io.reactivex.ObservableEmitter;
 
@@ -42,42 +43,47 @@ public class AsyncAging extends AsyncBase {
         if (!testPath.exists()) testPath.mkdirs();
         try {
             {
-                for (; progress <= 5; progress++) {
+                for (; progress <= 25; progress++) {
                     if (iStop) return;
                     Thread.sleep(30);
                     emitter.onNext(new ProgressInfo("碎片化", "处理中", progress));
                 }
                 emitter.onNext(new ProgressInfo("碎片化", null, true));
             }
-            copyFile(emitter, testPath, "图片", Config.Admin.Images, aging.Image, 5);
-            copyFile(emitter, testPath, "音频", Config.Admin.Audios, aging.Audio, 10);
-            copyFile(emitter, testPath, "视频", Config.Admin.Videos, aging.Video, 15);
+            copyFile(emitter, testPath, "图片", Config.Admin.Images, aging.Image, 30);
+            copyFile(emitter, testPath, "音频", Config.Admin.Audios, aging.Audio, 35);
+            copyFile(emitter, testPath, "视频", Config.Admin.Videos, aging.Video, 40);
             {
                 String format = "Aging%0" + (aging.Contact + "").length() + "d";
                 String phoneFormat = "%011d";
                 for (int i = 1; i <= aging.Contact; i++) {
                     if (iStop) return;
                     addContact(String.format(format, i), String.format(phoneFormat, i));
-                    progress = 20 + i * 5 / aging.Contact;
+                    progress = 45 + i * 5 / aging.Contact;
                     emitter.onNext(new ProgressInfo("联系人", i + "/" + aging.Contact, progress));
                 }
                 emitter.onNext(new ProgressInfo("联系人", aging.Contact + "", true));
             }
             {
-                String format = "测试短信%0" + (aging.Sms + "").length() + "d[Aging]";
-                for (int i = 1; i <= aging.Sms; i++) {
-                    if (iStop) return;
-                    addSMS(String.format(format, i));
-                    progress = 25 + i * 5 / aging.Sms;
-                    emitter.onNext(new ProgressInfo("信息", i + "/" + aging.Sms, progress));
+                if (!Config.ISMS) {
+                    emitter.onNext(new ProgressInfo("信息", "未授权", false));
+                } else {
+                    String format = "测试短信%0" + (aging.Sms + "").length() + "d[Aging]";
+                    String phoneFormat = "1%04d";
+                    for (int i = 1; i <= aging.Sms; i++) {
+                        if (iStop) return;
+                        addSMS(String.format(phoneFormat, i), String.format(format, i));
+                        progress = 50 + i * 5 / aging.Sms;
+                        emitter.onNext(new ProgressInfo("信息", i + "/" + aging.Sms, progress));
+                    }
+                    emitter.onNext(new ProgressInfo("信息", aging.Sms + "", true));
                 }
-                emitter.onNext(new ProgressInfo("信息", aging.Sms + "", true));
             }
             {
                 for (int i = 1; i <= aging.Call; i++) {
                     if (iStop) return;
                     Thread.sleep(1);
-                    progress = 30 + i * 5 / aging.Call;
+                    progress = 55 + i * 5 / aging.Call;
                     emitter.onNext(new ProgressInfo("通话记录", i + "/" + aging.Call, progress));
                 }
                 emitter.onNext(new ProgressInfo("通话记录", aging.Call + "", true));
@@ -86,7 +92,7 @@ public class AsyncAging extends AsyncBase {
                 for (int i = 1; i <= aging.App; i++) {
                     if (iStop) return;
                     Thread.sleep(1);
-                    progress = 35 + i * 5 / aging.App;
+                    progress = 60 + i * 5 / aging.App;
                     emitter.onNext(new ProgressInfo("三方应用", i + "/" + aging.App, progress));
                 }
                 emitter.onNext(new ProgressInfo("三方应用", aging.App + "", true));
@@ -95,7 +101,7 @@ public class AsyncAging extends AsyncBase {
                 for (int i = 1; i <= aging.Video; i++) {
                     if (iStop) return;
                     Thread.sleep(1);
-                    progress = 15 + i * 5 / aging.Video;
+                    progress = 65 + i * 5 / aging.Video;
                     emitter.onNext(new ProgressInfo("填充文件", i + "/" + aging.Video, progress));
                 }
                 emitter.onNext(new ProgressInfo("填充文件", aging.File4 + ":" + aging.File8 + ":" + aging.File128, true));
@@ -105,14 +111,14 @@ public class AsyncAging extends AsyncBase {
         }
     }
 
-    private void addSMS(String body) {
+    private void addSMS(String address, String body) {
         ContentResolver cr = Config.context.getContentResolver();
         ContentValues values = new ContentValues();
-        values.put("address", 10087);
+        values.put("address", address);
         values.put("type", 1);
         values.put("date", System.currentTimeMillis());
         values.put("body", body);
-        Uri r = cr.insert(Uri.parse("content://sms/"), values);
+        cr.insert(Uri.parse("content://sms/"), values);
     }
 
     private void addContact(String userName, String phoneNumber) throws Exception {

@@ -1,7 +1,9 @@
 package com.riwise.aging.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -46,6 +48,36 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
         info = Cache.FindAging(title, Config.I32);
         findViewById(R.id.test_btn).setOnClickListener(this);
         loadListview();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            //获得自己app的包名
+            String myPackageName = getPackageName();
+            //获得系统默认短信应用的包名
+            String defaultSmsApp = Telephony.Sms.getDefaultSmsPackage(this);
+            Config.ISMS = defaultSmsApp.equals(myPackageName);
+            //如果自己的app不是默认app的话，就打开设置的界面，否则就直接执行恢复代码
+            if (!Config.ISMS) {
+                Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, myPackageName);
+                //这里加ForResult是为了加一个检验是否设置成功的时机
+                startActivityForResult(intent, 101);
+                //一旦走了这里，就不能执行恢复代码了
+            }
+        } else Config.ISMS = true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 101) {
+            //设置默认短信成功
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                String myPackageName = getPackageName();
+                if (Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
+                    Config.ISMS = true;
+                } else Config.ISMS = false;
+            }
+        }
     }
 
     @Override

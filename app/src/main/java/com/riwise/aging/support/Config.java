@@ -22,6 +22,7 @@ public class Config {
     public static DisplayMetrics display;
     public static File file;
     public static boolean I32;
+    public static boolean ISMS;
 
     public static void load(Activity activity) {
         file = new File(Environment.getExternalStorageDirectory(), "/Tinn/Aging");
