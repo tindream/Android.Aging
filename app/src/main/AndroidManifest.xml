@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.riwise.aging">
 
+    <!-- 写入通话记录-->
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
     <!-- 写入通讯录-->
     <uses-permission android:name="android.permission.WRITE_CONTACTS"></uses-permission>
     <!-- 写入扩展存储，向扩展卡写入数据-->

@@ -24,7 +24,8 @@ public class MainActivity extends MainBaseActivity {
         initFragments();
         String[] permissions = new String[]{
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_CONTACTS
+                Manifest.permission.WRITE_CONTACTS,
+                Manifest.permission.WRITE_CALL_LOG
         };
         Method.requestPower(permissions);
     }

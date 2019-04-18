@@ -1,10 +1,14 @@
 package com.riwise.aging.support;
 
+import android.Manifest;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.SmsManager;
 
 import io.reactivex.ObservableEmitter;
@@ -53,9 +57,9 @@ public class AsyncAging extends AsyncBase {
             copyFile(emitter, testPath, "图片", Config.Admin.Images, aging.Image, 30);
             copyFile(emitter, testPath, "音频", Config.Admin.Audios, aging.Audio, 35);
             copyFile(emitter, testPath, "视频", Config.Admin.Videos, aging.Video, 40);
+            String phoneFormat = "199%08d";
             {
                 String format = "Aging%0" + (aging.Contact + "").length() + "d";
-                String phoneFormat = "%011d";
                 for (int i = 1; i <= aging.Contact; i++) {
                     if (iStop) return;
                     addContact(String.format(format, i), String.format(phoneFormat, i));
@@ -69,7 +73,6 @@ public class AsyncAging extends AsyncBase {
                     emitter.onNext(new ProgressInfo("信息", "未授权", false));
                 } else {
                     String format = "测试短信%0" + (aging.Sms + "").length() + "d[Aging]";
-                    String phoneFormat = "1%04d";
                     for (int i = 1; i <= aging.Sms; i++) {
                         if (iStop) return;
                         addSMS(String.format(phoneFormat, i), String.format(format, i));
@@ -82,14 +85,15 @@ public class AsyncAging extends AsyncBase {
             {
                 for (int i = 1; i <= aging.Call; i++) {
                     if (iStop) return;
-                    Thread.sleep(1);
+                    addCall(String.format(phoneFormat, i));
                     progress = 55 + i * 5 / aging.Call;
                     emitter.onNext(new ProgressInfo("通话记录", i + "/" + aging.Call, progress));
                 }
                 emitter.onNext(new ProgressInfo("通话记录", aging.Call + "", true));
             }
             {
-                for (int i = 1; i <= aging.App; i++) {
+                String[] apps = Config.Admin.Apps.split(";");
+                for (int i = 1; i < apps.length && i <= aging.App; i++) {
                     if (iStop) return;
                     Thread.sleep(1);
                     progress = 60 + i * 5 / aging.App;
@@ -111,14 +115,32 @@ public class AsyncAging extends AsyncBase {
         }
     }
 
+
+    /**
+     * 插入一条通话记录
+     *
+     * @param number 通话号码
+     *               duration 通话时长（响铃时长）以秒为单位 1分30秒则输入90
+     *               type  通话类型  1呼入 2呼出 3未接
+     *               isNew 是否已查看    0已看1未看
+     */
+    private void addCall(String number) {
+        ContentValues values = new ContentValues();
+        values.put(CallLog.Calls.NUMBER, number);
+        values.put(CallLog.Calls.DATE, System.currentTimeMillis());
+        values.put(CallLog.Calls.DURATION, 60);
+        values.put(CallLog.Calls.TYPE, 2);
+        values.put(CallLog.Calls.NEW, 0);
+        Config.context.getContentResolver().insert(CallLog.Calls.CONTENT_URI, values);
+    }
+
     private void addSMS(String address, String body) {
-        ContentResolver cr = Config.context.getContentResolver();
         ContentValues values = new ContentValues();
         values.put("address", address);
         values.put("type", 1);
         values.put("date", System.currentTimeMillis());
         values.put("body", body);
-        cr.insert(Uri.parse("content://sms/"), values);
+        Config.context.getContentResolver().insert(Uri.parse("content://sms/"), values);
     }
 
     private void addContact(String userName, String phoneNumber) throws Exception {
