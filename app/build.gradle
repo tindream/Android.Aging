@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('D:\\Mobot\\Temp\\Android\\Document\\Signed\\aging.jks')
+            storePassword 'mobotaA*'
+            keyPassword 'mobotaA*'
+            keyAlias = 'aging'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.riwise.aging"

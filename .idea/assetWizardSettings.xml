@@ -68,14 +68,24 @@
                                           </PersistentState>
                                         </value>
                                       </entry>
+                                      <entry key="foregroundText">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="color" value="000000" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
                                     </map>
                                   </option>
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="eef8fe" />
-                                      <entry key="foregroundImage" value="D:\logo.png" />
-                                      <entry key="legacyIconShape" value="NONE" />
+                                      <entry key="backgroundColor" value="f0f8ff" />
+                                      <entry key="foregroundImage" value="D:\Mobot\Temp\Android\Aging\Document\logo.png" />
                                     </map>
                                   </option>
                                 </PersistentState>
