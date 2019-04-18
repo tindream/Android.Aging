@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class AsyncAging extends AsyncBase {
@@ -43,78 +44,115 @@ public class AsyncAging extends AsyncBase {
     protected void onLoadData(ObservableEmitter<LoadInfo> emitter, LoadInfo info) throws Exception {
         AgingInfo aging = ((TestInfo) info).info;
         int progress = 0;
+        String name = null;
         File testPath = new File(Config.file.getPath(), "Test");
         if (!testPath.exists()) testPath.mkdirs();
         try {
             {
-                for (; progress <= 25; progress++) {
+                name = "碎片化";
+                for (int i = 1; i <= 100; i++) {
                     if (iStop) return;
-                    Thread.sleep(30);
-                    emitter.onNext(new ProgressInfo("碎片化", "处理中", progress));
+                    Thread.sleep(20);
+                    emitter.onNext(new ProgressInfo(name, "不处理", progress + i * 30 / 100, i));
                 }
-                emitter.onNext(new ProgressInfo("碎片化", null, true));
+                emitter.onNext(new ProgressInfo(name, "未处理"));
             }
-            copyFile(emitter, testPath, "图片", Config.Admin.Images, aging.Image, 30);
-            copyFile(emitter, testPath, "音频", Config.Admin.Audios, aging.Audio, 35);
-            copyFile(emitter, testPath, "视频", Config.Admin.Videos, aging.Video, 40);
+            copyFile(emitter, testPath, name = "图片", Config.Admin.Images, aging.Image, 30);
+            copyFile(emitter, testPath, name = "音频", Config.Admin.Audios, aging.Audio, 35);
+            copyFile(emitter, testPath, name = "视频", Config.Admin.Videos, aging.Video, 40);
             String phoneFormat = "199%08d";
             {
+                name = "联系人";
                 String format = "Aging%0" + (aging.Contact + "").length() + "d";
                 for (int i = 1; i <= aging.Contact; i++) {
                     if (iStop) return;
                     addContact(String.format(format, i), String.format(phoneFormat, i));
                     progress = 45 + i * 5 / aging.Contact;
-                    emitter.onNext(new ProgressInfo("联系人", i + "/" + aging.Contact, progress));
+                    emitter.onNext(new ProgressInfo(name, i + "/" + aging.Contact, progress, i * 100 / aging.Contact));
                 }
-                emitter.onNext(new ProgressInfo("联系人", aging.Contact + "", true));
+                emitter.onNext(new ProgressInfo(name, aging.Contact + ""));
             }
             {
+                name = "信息";
                 if (!Config.ISMS) {
-                    emitter.onNext(new ProgressInfo("信息", "未授权", false));
+                    emitter.onNext(new ProgressInfo(name, "未授权", false));
                 } else {
                     String format = "测试短信%0" + (aging.Sms + "").length() + "d[Aging]";
                     for (int i = 1; i <= aging.Sms; i++) {
                         if (iStop) return;
                         addSMS(String.format(phoneFormat, i), String.format(format, i));
                         progress = 50 + i * 5 / aging.Sms;
-                        emitter.onNext(new ProgressInfo("信息", i + "/" + aging.Sms, progress));
+                        emitter.onNext(new ProgressInfo(name, i + "/" + aging.Sms, progress, i * 100 / aging.Sms));
                     }
-                    emitter.onNext(new ProgressInfo("信息", aging.Sms + "", true));
+                    emitter.onNext(new ProgressInfo(name, aging.Sms + ""));
                 }
             }
             {
+                name = "通话记录";
                 for (int i = 1; i <= aging.Call; i++) {
                     if (iStop) return;
                     addCall(String.format(phoneFormat, i));
                     progress = 55 + i * 5 / aging.Call;
-                    emitter.onNext(new ProgressInfo("通话记录", i + "/" + aging.Call, progress));
+                    emitter.onNext(new ProgressInfo(name, i + "/" + aging.Call, progress, i * 100 / aging.Call));
                 }
-                emitter.onNext(new ProgressInfo("通话记录", aging.Call + "", true));
+                emitter.onNext(new ProgressInfo(name, aging.Call + ""));
             }
             {
+                name = "三方应用";
                 String[] apps = Config.Admin.Apps.split(";");
-                for (int i = 1; i < apps.length && i <= aging.App; i++) {
+                int count = apps.length;
+                if (count > aging.App) count = aging.App;
+                for (int i = 1; i < count; i++) {
                     if (iStop) return;
-                    Thread.sleep(1);
-                    progress = 60 + i * 5 / aging.App;
-                    emitter.onNext(new ProgressInfo("三方应用", i + "/" + aging.App, progress));
+                    installApp(apps[i - 1]);
+                    progress = 60 + i * 5 / count;
+                    emitter.onNext(new ProgressInfo(name, i + "/" + count, progress, i * 100 / count));
                 }
-                emitter.onNext(new ProgressInfo("三方应用", aging.App + "", true));
+                emitter.onNext(new ProgressInfo(name, count + "/" + aging.App));
             }
             {
-                for (int i = 1; i <= aging.Video; i++) {
+                name = "填充文件";
+                for (int i = 1; i <= 100; i++) {
                     if (iStop) return;
                     Thread.sleep(1);
-                    progress = 65 + i * 5 / aging.Video;
-                    emitter.onNext(new ProgressInfo("填充文件", i + "/" + aging.Video, progress));
+                    progress = 65 + i * 35 / 100;
+                    emitter.onNext(new ProgressInfo(name, i + "/" + 100, progress, i * 100 / 100));
                 }
-                emitter.onNext(new ProgressInfo("填充文件", aging.File4 + ":" + aging.File8 + ":" + aging.File128, true));
+                emitter.onNext(new ProgressInfo(name, aging.File4 + ":" + aging.File8 + ":" + aging.File128));
             }
+            emitter.onNext(new LoadInfo(LoadType.complete));
+        } catch (Exception e) {
+            emitter.onNext(new ProgressInfo(name, e.getMessage(), false));
+            throw e;
         } finally {
-            emitter.onNext(new LoadInfo(iStop ? LoadType.cancel : LoadType.complete));
+            if (iStop) emitter.onNext(new LoadInfo(LoadType.cancel));
         }
     }
 
+    public static boolean installApp(String apkPath) throws Exception {
+        Process process = null;
+        BufferedReader successResult = null;
+        BufferedReader errorResult = null;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder errorMsg = new StringBuilder();
+        try {
+            process = new ProcessBuilder("pm", "install", "-i", "com.riwise.aging", "-r", apkPath).start();
+            successResult = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String s;
+            while ((s = successResult.readLine()) != null) successMsg.append(s);
+            while ((s = errorResult.readLine()) != null) errorMsg.append(s);
+        } catch (Exception e) {
+
+        } finally {
+            if (successResult != null) successResult.close();
+            if (errorResult != null) errorResult.close();
+            if (process != null) process.destroy();
+        }
+        Method.hit(errorMsg.toString());
+        //如果含有“success”单词则认为安装成功
+        return successMsg.toString().equalsIgnoreCase("success");
+    }
 
     /**
      * 插入一条通话记录
@@ -164,44 +202,39 @@ public class AsyncAging extends AsyncBase {
     }
 
     private void copyFile(ObservableEmitter<LoadInfo> emitter, File testPath, String name, String path, int count, int progress) throws Exception {
-        try {
-            if (Method.isEmpty(path)) {
-                emitter.onNext(new ProgressInfo(name, "未设置", false));
-                return;
-            }
-            File file = new File(path);
-            if (!file.exists()) {
-                emitter.onNext(new ProgressInfo(name, "文件不存在", false));
-                return;
-            }
-
-            File imagePath = new File(testPath.getPath(), name);
-            if (!imagePath.exists()) imagePath.mkdirs();
-            String ex = Method.getExtensionName(file);
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            String format = "%0" + (count + "").length() + "d." + ex;
-            for (int i = 1; i <= count; i++) {
-                if (iStop) return;
-
-                File imageFile = new File(imagePath.getPath(), String.format(format, i));
-                imageFile.delete();
-                FileWriter writer = new FileWriter(imageFile, true);
-
-                reader.mark((int) file.length());
-                String content;
-                while ((content = reader.readLine()) != null) {
-                    writer.write(content);
-                }
-                writer.close();
-                reader.reset();
-
-                emitter.onNext(new ProgressInfo(name, i + "/" + count, progress + i * 5 / count));
-            }
-            reader.close();
-            emitter.onNext(new ProgressInfo(name, count + "", true));
-        } catch (Exception e) {
-            emitter.onNext(new ProgressInfo(name, e.getMessage(), false));
-            throw e;
+        if (Method.isEmpty(path)) {
+            emitter.onNext(new ProgressInfo(name, "未设置", false));
+            return;
         }
+        File file = new File(path);
+        if (!file.exists()) {
+            emitter.onNext(new ProgressInfo(name, "文件不存在", false));
+            return;
+        }
+
+        File imagePath = new File(testPath.getPath(), name);
+        if (!imagePath.exists()) imagePath.mkdirs();
+        String ex = Method.getExtensionName(file);
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String format = "%0" + (count + "").length() + "d." + ex;
+        for (int i = 1; i <= count; i++) {
+            if (iStop) return;
+
+            File imageFile = new File(imagePath.getPath(), String.format(format, i));
+            imageFile.delete();
+            FileWriter writer = new FileWriter(imageFile, true);
+
+            reader.mark((int) file.length());
+            String content;
+            while ((content = reader.readLine()) != null) {
+                writer.write(content);
+            }
+            writer.close();
+            reader.reset();
+
+            emitter.onNext(new ProgressInfo(name, i + "/" + count, progress + i * 5 / count, i * 100 / count));
+        }
+        reader.close();
+        emitter.onNext(new ProgressInfo(name, count + ""));
     }
 }

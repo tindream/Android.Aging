@@ -95,8 +95,10 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
         switch (info.Types) {
             case progress:
                 ProgressInfo temp = (ProgressInfo) info;
-                ProgressBar progress = findViewById(R.id.test_progressBar);
-                progress.setProgress(temp.progress);
+                ProgressBar progress = findViewById(R.id.test_progressIndex);
+                progress.setProgress(temp.index);
+                progress = findViewById(R.id.test_progressBar);
+                if (temp.progress >= 0) progress.setProgress(temp.progress);
 
                 ListView listView = findViewById(R.id.test_listView);
                 MyAdapter adapter = (MyAdapter) listView.getAdapter();
@@ -104,7 +106,7 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
                 for (int i = 0; i < infoList.size(); i++) {
                     SetInfo setInfo = (SetInfo) infoList.get(i);
                     if (setInfo.Message.equals(temp.name)) {
-                        setInfo.updateTest(temp.desc, temp.loading, temp.complete);
+                        setInfo.updateDesc(temp.desc, temp.loading, temp.complete);
                         adapter.notifyDataSetChanged();
                         break;
                     }
@@ -119,6 +121,7 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
                 break;
             case error:
                 Method.hit(info.getMsg());
+                stop();
                 break;
         }
     }
@@ -132,7 +135,7 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
         List infoList = adapter.get();
         for (int i = 0; i < infoList.size(); i++) {
             SetInfo setInfo = (SetInfo) infoList.get(i);
-            setInfo.updateTest(setInfo.desc, false, false);
+            setInfo.updateDesc(setInfo.desc, false, false);
         }
         adapter.notifyDataSetChanged();
         aging = new AsyncAging(info);

@@ -36,14 +36,18 @@ public class SetInfo extends LoadInfo {
 
     public void updateDesc(String desc) {
         if (!Method.isEmpty(desc)) {
-            desc = new File(desc).getName();
-            if (desc.length() > 12) desc = desc.substring(0, 12) + "...";
+            if (desc.contains(";")) {
+                desc = desc.split(";").length + "";
+            } else {
+                desc = new File(desc).getName();
+                if (desc.length() > 12) desc = desc.substring(0, 12) + "...";
+            }
         }
         this.desc = desc;
     }
 
-    public void updateTest(String desc, boolean loading, boolean complete) {
-        this.desc = desc;
+    public void updateDesc(String desc, boolean loading, boolean complete) {
+        updateDesc(desc);
         this.colorId = loading ? R.color.colorPrimaryLight : R.color.Transparent;
         this.imageId = complete ? R.drawable.ic_correct_dark : 0;
     }

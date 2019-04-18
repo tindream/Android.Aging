@@ -69,7 +69,6 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         list.add(new SetInfo(FileType.Images, Config.Admin.Images));
         list.add(new SetInfo(FileType.Audios, Config.Admin.Audios));
         list.add(new SetInfo(FileType.Videos, Config.Admin.Videos));
-        list.add(new SetInfo(FileType.Contacts, Config.Admin.Contacts));
         list.add(new SetInfo(FileType.Apps, Config.Admin.Apps));
         list.add(new SetInfo(FileType.File4s, Config.Admin.File4s));
         list.add(new SetInfo(FileType.File8s, Config.Admin.File8s));
@@ -103,12 +102,9 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
                 name = FileType.Videos;
                 Config.Admin.Videos = path;
                 server.updateAdmin("Videos", Config.Admin.Videos);
-            } else if (requestCode == getCode(FileType.Contacts)) {
-                name = FileType.Contacts;
-                Config.Admin.Contacts = path;
-                server.updateAdmin("Contacts", Config.Admin.Contacts);
             } else if (requestCode == getCode(FileType.Apps)) {
                 name = FileType.Apps;
+                for (int i = 1; i < list.size(); i++) path += ";" + list.get(i);
                 Config.Admin.Apps = path;
                 server.updateAdmin("Apps", Config.Admin.Apps);
             } else if (requestCode == getCode(FileType.File4s)) {
@@ -171,11 +167,9 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
             case FileType.Videos:
                 path = Config.Admin.Videos;
                 break;
-            case FileType.Contacts:
-                path = Config.Admin.Contacts;
-                break;
             case FileType.Apps:
                 path = Config.Admin.Apps;
+                if (path.contains(";")) path = path.split(";")[0];
                 break;
             case FileType.File4s:
                 path = Config.Admin.File4s;
@@ -197,11 +191,8 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
             case FileType.Videos:
                 picker.start();
                 break;
-            case FileType.Contacts:
-                picker.withFileFilter(new String[]{".vcf"}).start();
-                break;
             case FileType.Apps:
-                picker.withFileFilter(new String[]{".apk"}).start();
+                picker.withMutilyMode(true).withFileFilter(new String[]{".apk"}).start();
                 break;
             case FileType.File4s:
             case FileType.File8s:
