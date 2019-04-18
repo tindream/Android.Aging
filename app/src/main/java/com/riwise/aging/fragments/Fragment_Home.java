@@ -48,6 +48,7 @@ public class Fragment_Home extends Fragment_Base implements IListListener, ILoad
 
     private void onClick(String text) {
         switch (text) {
+            case "老化测试模型":
             case "10个月老化模型":
             case "18个月老化模型":
             case "24个月老化模型":
@@ -67,6 +68,7 @@ public class Fragment_Home extends Fragment_Base implements IListListener, ILoad
         super.load(R.id.home_context, R.id.home_load, R.id.home_text, false);
 
         List<SetInfo> list = new ArrayList();
+        list.add(new SetInfo(getString(R.string.btn_0)));
         list.add(new SetInfo(getString(R.string.btn_10)));
         list.add(new SetInfo(getString(R.string.btn_18)));
         list.add(new SetInfo(getString(R.string.btn_24)));

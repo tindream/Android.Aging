@@ -2,11 +2,9 @@ package com.riwise.aging.data;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.ObservableEmitter;
@@ -36,6 +34,9 @@ public class SQLiteServer {
         emitter.onNext(new LoadInfo(LoadType.load));
         Cache.AgingList = queryList(AgingInfo.class, new AgingInfo().getSql());
         if (Cache.AgingList.size() == 0) {
+            addAging(Config.context.getString(R.string.btn_0), true, 20, 11, 12, 13, 14, 15, 16, 17, 80, 15, 5);
+            addAging(Config.context.getString(R.string.btn_0), false, 20, 11, 12, 13, 14, 15, 16, 17, 80, 15, 5);
+
             addAging(Config.context.getString(R.string.btn_10), true, 2, 1000, 200, 20, 1000, 3000, 500, 50, 80, 15, 5);
             addAging(Config.context.getString(R.string.btn_10), false, 5, 3000, 300, 30, 1000, 3000, 500, 60, 80, 15, 5);
 

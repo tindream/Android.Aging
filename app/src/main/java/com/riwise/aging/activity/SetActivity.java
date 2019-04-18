@@ -53,7 +53,6 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             //判断sdcard存储空间是否满足文件的存储
             File sdcard = Environment.getExternalStorageDirectory();//得到sdcard的目录作为一个文件对象
-            long usableSpace = sdcard.getUsableSpace();//获取文件目录对象剩余空间
             long totalSpace = sdcard.getTotalSpace();
             Config.I32 = totalSpace < 1024 * 1024 * 1024 * 32;
             list.add(new SetInfo("内置SD卡 " + (Config.I32 ? "=" : ">") + " 32G", true));
@@ -61,6 +60,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
         } else {
             list.add(new SetInfo("SD卡未挂载"));
         }
+        list.add(new SetInfo(getString(R.string.btn_0)));
         list.add(new SetInfo(getString(R.string.btn_10)));
         list.add(new SetInfo(getString(R.string.btn_18)));
         list.add(new SetInfo(getString(R.string.btn_24)));
@@ -142,6 +142,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
 
     private void onClick(String text) {
         switch (text) {
+            case "老化测试模型":
             case "10个月老化模型":
             case "18个月老化模型":
             case "24个月老化模型":
@@ -169,7 +170,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
                 break;
             case FileType.Apps:
                 path = Config.Admin.Apps;
-                if (path.contains(";")) path = path.split(";")[0];
+                if (path != null && path.contains(";")) path = path.split(";")[0];
                 break;
             case FileType.File4s:
                 path = Config.Admin.File4s;

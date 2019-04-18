@@ -6,6 +6,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +20,7 @@ import com.riwise.aging.info.loadInfo.ProgressInfo;
 import com.riwise.aging.info.loadInfo.TestInfo;
 import com.riwise.aging.info.sqlInfo.AgingInfo;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,7 +54,7 @@ public class AsyncAging extends AsyncBase {
                 name = "碎片化";
                 for (int i = 1; i <= 100; i++) {
                     if (iStop) return;
-                    Thread.sleep(20);
+                    Thread.sleep(1);
                     emitter.onNext(new ProgressInfo(name, "不处理", progress + i * 30 / 100, i));
                 }
                 emitter.onNext(new ProgressInfo(name, "未处理"));
@@ -99,24 +101,44 @@ public class AsyncAging extends AsyncBase {
             }
             {
                 name = "三方应用";
-                String[] apps = Config.Admin.Apps.split(";");
-                int count = apps.length;
-                if (count > aging.App) count = aging.App;
-                for (int i = 1; i < count; i++) {
-                    if (iStop) return;
-                    installApp(apps[i - 1]);
-                    progress = 60 + i * 5 / count;
-                    emitter.onNext(new ProgressInfo(name, i + "/" + count, progress, i * 100 / count));
+                if (Method.isEmpty(Config.Admin.Apps)) {
+                    emitter.onNext(new ProgressInfo(name, "未设置", false));
+                } else {
+                    String[] apps = Config.Admin.Apps.split(";");
+                    int count = apps.length;
+                    if (count > aging.App) count = aging.App;
+                    for (int i = 1; i < count; i++) {
+                        if (iStop) return;
+                        installApp(apps[i - 1]);
+                        progress = 60 + i * 5 / count;
+                        emitter.onNext(new ProgressInfo(name, i + "/" + count, progress, i * 100 / count));
+                    }
+                    emitter.onNext(new ProgressInfo(name, count + "/" + aging.App));
                 }
-                emitter.onNext(new ProgressInfo(name, count + "/" + aging.App));
             }
             {
                 name = "填充文件";
-                for (int i = 1; i <= 100; i++) {
-                    if (iStop) return;
-                    Thread.sleep(1);
-                    progress = 65 + i * 35 / 100;
-                    emitter.onNext(new ProgressInfo(name, i + "/" + 100, progress, i * 100 / 100));
+                double last = aging.Last * 1024 * 1024 * 1024;
+                File sdcard = Environment.getExternalStorageDirectory();//得到sdcard的目录作为一个文件对象
+                long usable = sdcard.getUsableSpace();//获取文件目录对象剩余空间
+                double space = usable - last;//填充空间
+                if (space > 0) {
+                    int index = 0;
+                    while (true) {
+                        if (iStop) return;
+                        index += copyFile(testPath, name, Config.Admin.File4s, aging.File4, index);
+                        index += copyFile(testPath, name, Config.Admin.File8s, aging.File8, index);
+                        index += copyFile(testPath, name, Config.Admin.File128s, aging.File128, index);
+
+                        long usableSpace = sdcard.getUsableSpace();//获取文件目录对象剩余空间
+                        int child = (int) ((usable - usableSpace) * 35 / space);
+                        emitter.onNext(new ProgressInfo(name, index + "(" + String.format("%.3f", usableSpace / 1024.0 / 1024 / 1024) + "G)", 65 + child, child));
+                        if (usableSpace < last) break;
+                        if (index == 0) {
+                            emitter.onNext(new ProgressInfo(name, "未设置", false));
+                            return;
+                        }
+                    }
                 }
                 emitter.onNext(new ProgressInfo(name, aging.File4 + ":" + aging.File8 + ":" + aging.File128));
             }
@@ -127,6 +149,32 @@ public class AsyncAging extends AsyncBase {
         } finally {
             if (iStop) emitter.onNext(new LoadInfo(LoadType.cancel));
         }
+    }
+
+    private int copyFile(File testPath, String name, String path, int count, int start) throws Exception {
+        if (Method.isEmpty(path)) return 0;
+        File file = new File(path);
+        File imagePath = new File(testPath.getPath(), name);
+        if (!imagePath.exists()) imagePath.mkdirs();
+        String ex = Method.getExtensionName(file);
+        BufferedInputStream reader = new BufferedInputStream(new FileInputStream(file));
+        String format = "%09d." + ex;
+        for (int i = 1; i <= count; i++) {
+            if (iStop) return i - 1;
+
+            reader.mark((int) file.length());
+            File imageFile = new File(imagePath.getPath(), String.format(format, start + i));
+            FileOutputStream output = new FileOutputStream(imageFile);
+            byte[] bytes = new byte[1024];
+            int read;
+            while ((read = reader.read(bytes)) != -1) {
+                output.write(bytes, 0, read);
+            }
+            output.close();
+            reader.reset();
+        }
+        reader.close();
+        return count;
     }
 
     public static boolean installApp(String apkPath) throws Exception {
@@ -215,21 +263,20 @@ public class AsyncAging extends AsyncBase {
         File imagePath = new File(testPath.getPath(), name);
         if (!imagePath.exists()) imagePath.mkdirs();
         String ex = Method.getExtensionName(file);
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedInputStream reader = new BufferedInputStream(new FileInputStream(file));
         String format = "%0" + (count + "").length() + "d." + ex;
         for (int i = 1; i <= count; i++) {
             if (iStop) return;
 
-            File imageFile = new File(imagePath.getPath(), String.format(format, i));
-            imageFile.delete();
-            FileWriter writer = new FileWriter(imageFile, true);
-
             reader.mark((int) file.length());
-            String content;
-            while ((content = reader.readLine()) != null) {
-                writer.write(content);
+            File imageFile = new File(imagePath.getPath(), String.format(format, i));
+            FileOutputStream output = new FileOutputStream(imageFile);
+            byte[] bytes = new byte[1024];
+            int read;
+            while ((read = reader.read(bytes)) != -1) {
+                output.write(bytes, 0, read);
             }
-            writer.close();
+            output.close();
             reader.reset();
 
             emitter.onNext(new ProgressInfo(name, i + "/" + count, progress + i * 5 / count, i * 100 / count));

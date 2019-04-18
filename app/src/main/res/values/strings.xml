@@ -9,6 +9,7 @@
     <string name="btn_about">关于</string>
     <string name="btn_start">开始</string>
 
+    <string name="btn_0">老化测试模型</string>
     <string name="btn_10">10个月老化模型</string>
     <string name="btn_18">18个月老化模型</string>
     <string name="btn_24">24个月老化模型</string>

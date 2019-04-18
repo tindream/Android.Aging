@@ -47,7 +47,8 @@ public class SetInfo extends LoadInfo {
     }
 
     public void updateDesc(String desc, boolean loading, boolean complete) {
-        updateDesc(desc);
+        if (desc != null && desc.length() > 25) desc = desc.substring(0, 25) + "...";
+        this.desc = desc;
         this.colorId = loading ? R.color.colorPrimaryLight : R.color.Transparent;
         this.imageId = complete ? R.drawable.ic_correct_dark : 0;
     }
