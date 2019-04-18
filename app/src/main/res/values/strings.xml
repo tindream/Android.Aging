@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Aging</string>
+    <string name="app_names">Aging</string>
     <string name="desc_load">Loading</string>
 
     <string name="btn_set">设置</string>

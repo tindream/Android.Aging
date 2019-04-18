@@ -16,7 +16,7 @@
         android:theme="?attr/actionBarTheme"
         app:contentInsetStartWithNavigation="0dp"
         app:navigationIcon="@drawable/ic_back"
-        app:title="@string/app_name"
+        app:title="@string/app_names"
         app:titleMargin="0dp"
         app:titleTextColor="@color/While" />
 

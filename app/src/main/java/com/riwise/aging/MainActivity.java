@@ -23,7 +23,8 @@ public class MainActivity extends MainBaseActivity implements View.OnClickListen
         new AsyncLoad().setListener(this);
         initFragments();
         String[] permissions = new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_CONTACTS
         };
         Method.requestPower(permissions);
     }

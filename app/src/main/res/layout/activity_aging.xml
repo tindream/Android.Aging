@@ -16,35 +16,9 @@
         android:theme="?attr/actionBarTheme"
         app:contentInsetStartWithNavigation="0dp"
         app:navigationIcon="@drawable/ic_back"
-        app:title="@string/app_name"
+        app:title="@string/app_names"
         app:titleMargin="0dp"
         app:titleTextColor="@color/While" />
-
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:fontFamily="sans-serif"
-            android:minWidth="70dp"
-            android:paddingLeft="10dp"
-            android:text="剩余空间"
-            android:textSize="@dimen/text16" />
-
-        <EditText
-            android:id="@+id/aging_last"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/desc_load"
-            android:inputType="numberDecimal"
-            android:paddingLeft="95dp"
-            android:theme="@style/MyEditText" />
-
-    </FrameLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -173,11 +147,36 @@
         android:scrollbarSize="@dimen/scrollbarSize"
         android:scrollbarThumbVertical="@color/colorPrimary">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
+                    android:minWidth="70dp"
+                    android:paddingLeft="10dp"
+                    android:text="剩余空间"
+                    android:textSize="@dimen/text16" />
+
+                <EditText
+                    android:id="@+id/aging_last"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/desc_load"
+                    android:inputType="numberDecimal"
+                    android:paddingLeft="95dp"
+                    android:theme="@style/MyEditText" />
+
+            </FrameLayout>
 
             <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"

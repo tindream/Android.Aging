@@ -1,5 +1,11 @@
 package com.riwise.aging.support;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.provider.ContactsContract;
+
 import io.reactivex.ObservableEmitter;
 
 import com.riwise.aging.enums.LoadType;
@@ -15,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class AsyncAging extends AsyncBase {
     private boolean iStop;
@@ -25,46 +32,6 @@ public class AsyncAging extends AsyncBase {
 
     public void stop() {
         this.iStop = true;
-    }
-
-    private void copyFile(ObservableEmitter<LoadInfo> emitter, File testPath, String name, String path, int count, int progress) throws Exception {
-        try {
-            if (Method.isEmpty(path)) {
-                emitter.onNext(new ProgressInfo(name, "未设置", false));
-                return;
-            }
-            File file = new File(path);
-            if (!file.exists()) {
-                emitter.onNext(new ProgressInfo(name, "文件不存在", false));
-                return;
-            }
-
-            File imagePath = new File(testPath.getPath(), name);
-            if (!imagePath.exists()) imagePath.mkdirs();
-            String ex = Method.getExtensionName(file);
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            for (int i = 1; i <= count; i++) {
-                if (iStop) return;
-                File imageFile = new File(imagePath.getPath(), i + "." + ex);
-                imageFile.delete();
-                FileWriter writer = new FileWriter(imageFile, true);
-
-                reader.mark((int) file.length());
-                String content;
-                while ((content = reader.readLine()) != null) {
-                    writer.write(content);
-                }
-                writer.close();
-                reader.reset();
-
-                emitter.onNext(new ProgressInfo(name, i + "/" + count, progress + i * 5 / count));
-            }
-            reader.close();
-            emitter.onNext(new ProgressInfo(name, count + "", true));
-        } catch (Exception e) {
-            emitter.onNext(new ProgressInfo(name, e.getMessage(), false));
-            throw e;
-        }
     }
 
     @Override
@@ -86,18 +53,21 @@ public class AsyncAging extends AsyncBase {
             copyFile(emitter, testPath, "音频", Config.Admin.Audios, aging.Audio, 10);
             copyFile(emitter, testPath, "视频", Config.Admin.Videos, aging.Video, 15);
             {
+                String format = "Aging%0" + (aging.Contact + "").length() + "d";
+                String phoneFormat = "%011d";
                 for (int i = 1; i <= aging.Contact; i++) {
                     if (iStop) return;
-                    Thread.sleep(1);
+                    addContact(String.format(format, i), String.format(phoneFormat, i));
                     progress = 20 + i * 5 / aging.Contact;
                     emitter.onNext(new ProgressInfo("联系人", i + "/" + aging.Contact, progress));
                 }
                 emitter.onNext(new ProgressInfo("联系人", aging.Contact + "", true));
             }
             {
+                String format = "测试短信%0" + (aging.Sms + "").length() + "d[Aging]";
                 for (int i = 1; i <= aging.Sms; i++) {
                     if (iStop) return;
-                    Thread.sleep(1);
+                    addSMS(String.format(format, i));
                     progress = 25 + i * 5 / aging.Sms;
                     emitter.onNext(new ProgressInfo("信息", i + "/" + aging.Sms, progress));
                 }
@@ -132,6 +102,78 @@ public class AsyncAging extends AsyncBase {
             }
         } finally {
             emitter.onNext(new LoadInfo(iStop ? LoadType.cancel : LoadType.complete));
+        }
+    }
+
+    private void addSMS(String body) {
+        ContentResolver cr = Config.context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put("address", 10087);
+        values.put("type", 1);
+        values.put("date", System.currentTimeMillis());
+        values.put("body", body);
+        Uri r = cr.insert(Uri.parse("content://sms/"), values);
+    }
+
+    private void addContact(String userName, String phoneNumber) throws Exception {
+        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+        ops.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)  // 此处传入null添加一个raw_contact空数据
+                .build());
+        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)  // RAW_CONTACT_ID是第一个事务添加得到的，因此这里传入0，applyBatch返回的ContentProviderResult[]数组中第一项
+                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, userName)
+                .build());
+        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, phoneNumber)
+                .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_WORK)
+                .build());
+
+        Config.context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+    }
+
+    private void copyFile(ObservableEmitter<LoadInfo> emitter, File testPath, String name, String path, int count, int progress) throws Exception {
+        try {
+            if (Method.isEmpty(path)) {
+                emitter.onNext(new ProgressInfo(name, "未设置", false));
+                return;
+            }
+            File file = new File(path);
+            if (!file.exists()) {
+                emitter.onNext(new ProgressInfo(name, "文件不存在", false));
+                return;
+            }
+
+            File imagePath = new File(testPath.getPath(), name);
+            if (!imagePath.exists()) imagePath.mkdirs();
+            String ex = Method.getExtensionName(file);
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String format = "%0" + (count + "").length() + "d." + ex;
+            for (int i = 1; i <= count; i++) {
+                if (iStop) return;
+
+                File imageFile = new File(imagePath.getPath(), String.format(format, i));
+                imageFile.delete();
+                FileWriter writer = new FileWriter(imageFile, true);
+
+                reader.mark((int) file.length());
+                String content;
+                while ((content = reader.readLine()) != null) {
+                    writer.write(content);
+                }
+                writer.close();
+                reader.reset();
+
+                emitter.onNext(new ProgressInfo(name, i + "/" + count, progress + i * 5 / count));
+            }
+            reader.close();
+            emitter.onNext(new ProgressInfo(name, count + "", true));
+        } catch (Exception e) {
+            emitter.onNext(new ProgressInfo(name, e.getMessage(), false));
+            throw e;
         }
     }
 }
