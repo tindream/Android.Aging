@@ -31,12 +31,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public void loadUpdate() {
         if (Config.Admin.Version == 0) {
-//            update1();
+            update1();
         }
     }
 
     private void update1() {
-        exec("alter table Agings add UserId integer");
+        exec("alter table Agings add File nvarchar");
         Config.Admin.Version = 1;
         updateAdmin("Version", Config.Admin.Version);
     }

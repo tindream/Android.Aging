@@ -34,23 +34,23 @@ public class SQLiteServer {
         emitter.onNext(new LoadInfo(LoadType.load));
         Cache.AgingList = queryList(AgingInfo.class, new AgingInfo().getSql());
         if (Cache.AgingList.size() == 0) {
-            addAging(Config.context.getString(R.string.btn_0), true, 20, 11, 12, 13, 14, 15, 16, 17, 80, 15, 5);
-            addAging(Config.context.getString(R.string.btn_0), false, 20, 11, 12, 13, 14, 15, 16, 17, 80, 15, 5);
+            addAging(Config.context.getString(R.string.btn_0), true, 18, 11, 12, 13, 14, 15, 16, 17, 80, 15, 5,"0123456789");
+            addAging(Config.context.getString(R.string.btn_0), false, 18, 11, 12, 13, 14, 15, 16, 17, 80, 15, 5,"0123456789");
 
-            addAging(Config.context.getString(R.string.btn_10), true, 2, 1000, 200, 20, 1000, 3000, 500, 50, 80, 15, 5);
-            addAging(Config.context.getString(R.string.btn_10), false, 5, 3000, 300, 30, 1000, 3000, 500, 60, 80, 15, 5);
+            addAging(Config.context.getString(R.string.btn_10), true, 2, 1000, 200, 20, 1000, 3000, 500, 50, 80, 15, 5,"1235679");
+            addAging(Config.context.getString(R.string.btn_10), false, 5, 3000, 300, 30, 1000, 3000, 500, 60, 80, 15, 5,"1235679");
 
-            addAging(Config.context.getString(R.string.btn_18), true, 2, 1500, 250, 25, 2000, 5400, 500, 55, 80, 15, 5);
-            addAging(Config.context.getString(R.string.btn_18), false, 3, 4500, 450, 45, 2000, 5400, 500, 80, 80, 15, 5);
+            addAging(Config.context.getString(R.string.btn_18), true, 2, 1500, 250, 25, 2000, 5400, 500, 55, 80, 15, 5,"13579");
+            addAging(Config.context.getString(R.string.btn_18), false, 3, 4500, 450, 45, 2000, 5400, 500, 80, 80, 15, 5,"13579");
 
-            addAging(Config.context.getString(R.string.btn_24), true, 1.5, 2000, 300, 30, 3000, 7200, 500, 60, 100, 0, 0);
-            addAging(Config.context.getString(R.string.btn_24), false, 2, 5400, 540, 54, 3000, 7200, 500, 100, 100, 0, 0);
+            addAging(Config.context.getString(R.string.btn_24), true, 1.5, 2000, 300, 30, 3000, 7200, 500, 60, 100, 0, 0,"13579");
+            addAging(Config.context.getString(R.string.btn_24), false, 2, 5400, 540, 54, 3000, 7200, 500, 100, 100, 0, 0,"13579");
         }
         Method.log("Load Completed");
         emitter.onNext(new LoadInfo(LoadType.complete));
     }
 
-    private void addAging(String name, boolean i32, double last, int image, int audio, int video, int contact, int sms, int call, int app, int file4, int file8, int file128) throws Exception {
+    private void addAging(String name, boolean i32, double last, int image, int audio, int video, int contact, int sms, int call, int app, int file4, int file8, int file128,String file) throws Exception {
         AgingInfo info = new AgingInfo();
         info.Name = name;
         info.I32 = i32;
@@ -65,6 +65,7 @@ public class SQLiteServer {
         info.File4 = file4;
         info.File8 = file8;
         info.File128 = file128;
+        info.File = file;
         insert(info);
         Cache.AgingList.add(info);
     }

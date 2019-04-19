@@ -22,6 +22,7 @@ public class AgingInfo extends BaseInfo implements Comparable<BaseInfo>, ILoadSy
     public int File4;
     public int File8;
     public int File128;
+    public String File;
 
     public AgingInfo() {
     }
@@ -50,6 +51,8 @@ public class AgingInfo extends BaseInfo implements Comparable<BaseInfo>, ILoadSy
         File4 = cursor.getInt(cursor.getColumnIndex("File4"));
         File8 = cursor.getInt(cursor.getColumnIndex("File8"));
         File128 = cursor.getInt(cursor.getColumnIndex("File128"));
+        File = cursor.getString(cursor.getColumnIndex("File"));
+        if (File == null) File = "";
     }
 
     public String getTable() {

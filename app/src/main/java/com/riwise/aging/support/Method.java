@@ -40,11 +40,6 @@ import com.riwise.aging.view.View_Confirm;
 public class Method {
     private static Toast toast;
 
-    public static String getExtensionName(File file) {
-        String name = file.getName();
-        return name.substring(name.lastIndexOf(".") + 1);
-    }
-
     //获取外置SD卡路径
     public static List<String> getExtSDCardPath() {
         List<String> lResult = new ArrayList<>();
@@ -182,7 +177,7 @@ public class Method {
             writer = new FileWriter(file, true);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             writer.write(format.format(new Date(System.currentTimeMillis())) + ": " + msg + "\r\n");
-            writer.close();
+            writer.flush();
         } catch (Exception e) {
             Log.e(Config.Text, msg(e));
         } finally {

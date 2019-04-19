@@ -135,6 +135,32 @@
 
     </FrameLayout>
 
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="sans-serif"
+            android:minWidth="70dp"
+            android:paddingLeft="10dp"
+            android:text="碎片化"
+            android:textSize="@dimen/text16" />
+
+        <EditText
+            android:id="@+id/aging_file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/desc_load"
+            android:inputType="text"
+            android:paddingLeft="95dp"
+            android:theme="@style/MyEditText" />
+
+    </FrameLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -164,7 +190,7 @@
                     android:fontFamily="sans-serif"
                     android:minWidth="70dp"
                     android:paddingLeft="10dp"
-                    android:text="剩余空间"
+                    android:text="目标剩余空间"
                     android:textSize="@dimen/text16" />
 
                 <EditText
@@ -173,7 +199,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/desc_load"
                     android:inputType="numberDecimal"
-                    android:paddingLeft="95dp"
+                    android:paddingLeft="110dp"
                     android:theme="@style/MyEditText" />
 
             </FrameLayout>
@@ -199,7 +225,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/desc_load"
                     android:inputType="number"
-                    android:paddingLeft="95dp"
+                    android:paddingLeft="110dp"
                     android:theme="@style/MyEditText" />
 
             </FrameLayout>
@@ -225,7 +251,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/desc_load"
                     android:inputType="number"
-                    android:paddingLeft="95dp"
+                    android:paddingLeft="110dp"
                     android:theme="@style/MyEditText" />
 
             </FrameLayout>
@@ -251,7 +277,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/desc_load"
                     android:inputType="number"
-                    android:paddingLeft="95dp"
+                    android:paddingLeft="110dp"
                     android:theme="@style/MyEditText" />
 
             </FrameLayout>
@@ -277,7 +303,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/desc_load"
                     android:inputType="number"
-                    android:paddingLeft="95dp"
+                    android:paddingLeft="110dp"
                     android:theme="@style/MyEditText" />
 
             </FrameLayout>
@@ -303,7 +329,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/desc_load"
                     android:inputType="number"
-                    android:paddingLeft="95dp"
+                    android:paddingLeft="110dp"
                     android:theme="@style/MyEditText" />
 
             </FrameLayout>
@@ -329,7 +355,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/desc_load"
                     android:inputType="number"
-                    android:paddingLeft="95dp"
+                    android:paddingLeft="110dp"
                     android:theme="@style/MyEditText" />
 
             </FrameLayout>
@@ -355,7 +381,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/desc_load"
                     android:inputType="number"
-                    android:paddingLeft="95dp"
+                    android:paddingLeft="110dp"
                     android:theme="@style/MyEditText" />
 
             </FrameLayout>

@@ -149,8 +149,8 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
 
     private void loadListview() {
         List<SetInfo> list = new ArrayList();
-        list.add(new SetInfo("剩余空间", info.Last + "G(" + (Config.I32 ? "" : ">") + "32G)", true));
-        list.add(new SetInfo("碎片化", ""));
+        list.add(new SetInfo("目标剩余空间", info.Last + "G(" + (Config.I32 ? "" : ">") + "32G)", true));
+        list.add(new SetInfo("碎片化", info.File4 + ":" + info.File8 + ":" + info.File128 + "(" + info.File + ")"));
         list.add(new SetInfo("图片", info.Image + ""));
         list.add(new SetInfo("音频", info.Audio + ""));
         list.add(new SetInfo("视频", info.Video + ""));
@@ -158,7 +158,7 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
         list.add(new SetInfo("信息", info.Sms + ""));
         list.add(new SetInfo("通话记录", info.Call + ""));
         list.add(new SetInfo("三方应用", info.App + ""));
-        list.add(new SetInfo("填充文件", info.File4 + ":" + info.File8 + ":" + info.File128));
+        list.add(new SetInfo("填充大文件", ""));
         new AsyncListView().setListener(this, this).init(this, list, R.layout.item_test);
     }
 

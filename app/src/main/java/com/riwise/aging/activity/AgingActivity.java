@@ -39,6 +39,7 @@ public class AgingActivity extends ChildActivity implements SeekBar.OnSeekBarCha
         seekBar.setTag(R.id.aging_128Ks);
         seekBar.setOnSeekBarChangeListener(this);
         seekBar.setProgress(info.File128);
+        setValue(R.id.aging_file, info.File);
         {
             setValue(R.id.aging_last, info.Last);
             setValue(R.id.aging_image, info.Image);
@@ -78,6 +79,7 @@ public class AgingActivity extends ChildActivity implements SeekBar.OnSeekBarCha
                 info.File4 = getSeekBar(R.id.aging_4K);
                 info.File8 = getSeekBar(R.id.aging_8K);
                 info.File128 = getSeekBar(R.id.aging_128K);
+                info.File = getValue(R.id.aging_file);
                 info.Last = Double.parseDouble(getValue(R.id.aging_last));
                 info.Image = Integer.parseInt(getValue(R.id.aging_image));
                 info.Audio = Integer.parseInt(getValue(R.id.aging_audio));

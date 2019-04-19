@@ -40,7 +40,7 @@ public class SetInfo extends LoadInfo {
                 desc = desc.split(";").length + "";
             } else {
                 desc = new File(desc).getName();
-                if (desc.length() > 12) desc = desc.substring(0, 12) + "...";
+                if (desc.length() > 25) desc = desc.substring(0, 25) + "...";
             }
         }
         this.desc = desc;
