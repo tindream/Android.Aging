@@ -84,7 +84,13 @@ public class AsyncAging extends AsyncBase {
                 output.write(buffer, 0, 4096);
                 if (index % 10 == 0) {
                     if (iStop) return;
-                    emitter.onNext(new ProgressInfo(name, String.format("%.1fM", index / 256.0), 100 * index / count));
+                    double value = index / 256.0;
+                    String desc = String.format("%.1fM", value);
+                    if (value > 1024) {
+                        value /= 1024;
+                        desc = String.format("%.2fG", value);
+                    }
+                    emitter.onNext(new ProgressInfo(name, desc, 100 * index / count));
                 }
             }
             output.flush();
@@ -118,9 +124,10 @@ public class AsyncAging extends AsyncBase {
     private void execFile(ObservableEmitter<LoadInfo> emitter, String name, File testPath, AgingInfo aging) throws Exception {
         File path = new File(testPath.getPath(), name);
         if (!path.exists()) path.mkdirs();
+        emitter.onNext(new ProgressInfo(name, "删除", 0));
         File big = new File(testPath.getPath(), "big.txt");
         big.delete();
-        double last = 18.7 * 1024 * 1024 * 1024;//填满,预留500M空间
+        double last = 18.2 * 1024 * 1024 * 1024;//填满,预留500M空间
         if (!Method.isEmpty(Config.Admin.File4s)) {
             try {
                 File file = new File(Config.Admin.File4s);
