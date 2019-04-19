@@ -38,17 +38,6 @@
         android:textSize="@dimen/text24" />
 
     <ProgressBar
-        android:id="@+id/test_progressIndex"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="1dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/Transparent" />
-
-    <ProgressBar
         android:id="@+id/test_progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"

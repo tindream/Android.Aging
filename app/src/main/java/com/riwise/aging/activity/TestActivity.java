@@ -95,10 +95,8 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
         switch (info.Types) {
             case progress:
                 ProgressInfo temp = (ProgressInfo) info;
-                ProgressBar progress = findViewById(R.id.test_progressIndex);
+                ProgressBar progress = findViewById(R.id.test_progressBar);
                 progress.setProgress(temp.index);
-                progress = findViewById(R.id.test_progressBar);
-                if (temp.progress >= 0) progress.setProgress(temp.progress);
 
                 ListView listView = findViewById(R.id.test_listView);
                 MyAdapter adapter = (MyAdapter) listView.getAdapter();
