@@ -50,17 +50,17 @@ public class AsyncAging extends AsyncBase {
         if (!testPath.exists()) testPath.mkdirs();
         try {
             execFile(emitter, name = "碎片化", testPath, aging);
-            execStart(emitter, name = "碎片化", testPath, aging.File);
-            copyFile(emitter, name = "图片", testPath, Config.Admin.Images, aging.Image);
-            copyFile(emitter, name = "音频", testPath, Config.Admin.Audios, aging.Audio);
-            copyFile(emitter, name = "视频", testPath, Config.Admin.Videos, aging.Video);
+            if (!iStop) execStart(emitter, name = "碎片化", testPath, aging.File);
+            if (!iStop) copyFile(emitter, name = "图片", testPath, Config.Admin.Images, aging.Image);
+            if (!iStop) copyFile(emitter, name = "音频", testPath, Config.Admin.Audios, aging.Audio);
+            if (!iStop) copyFile(emitter, name = "视频", testPath, Config.Admin.Videos, aging.Video);
             String phoneFormat = "199%08d";
-            execContact(emitter, name = "联系人", phoneFormat, aging.Contact);
-            execSms(emitter, name = "信息", phoneFormat, aging.Sms);
-            execCall(emitter, name = "通话记录", phoneFormat, aging.Call);
-            execApp(emitter, name = "三方应用", aging.App);
-            execFileBig(emitter, name = "填充大文件", testPath, aging.Last);
-            emitter.onNext(new LoadInfo(LoadType.complete));
+            if (!iStop) execContact(emitter, name = "联系人", phoneFormat, aging.Contact);
+            if (!iStop) execSms(emitter, name = "信息", phoneFormat, aging.Sms);
+            if (!iStop) execCall(emitter, name = "通话记录", phoneFormat, aging.Call);
+            if (!iStop) execApp(emitter, name = "三方应用", aging.App);
+            if (!iStop) execFileBig(emitter, name = "填充大文件", testPath, aging.Last);
+            if (!iStop) emitter.onNext(new LoadInfo(LoadType.complete));
         } catch (Exception e) {
             emitter.onNext(new ProgressInfo(name, e.getMessage(), false));
             throw e;
@@ -75,11 +75,13 @@ public class AsyncAging extends AsyncBase {
         double space = usable - last * 1024 * 1024 * 1024;//填充空间
         File file = new File(testPath.getPath(), "big.txt");
         FileOutputStream output = new FileOutputStream(file);
-        byte[] bytes = new byte[4096];
+        byte[] buffer = new byte[4096];
+        for (int i = 0; i < buffer.length; i++)
+            buffer[i] = (byte) Method.round(128);
         int count = (int) (space / 4096);
         try {
             for (int index = 0; index < count; index++) {
-                output.write(bytes, 0, 4096);
+                output.write(buffer, 0, 4096);
                 if (index % 10 == 0) {
                     if (iStop) return;
                     emitter.onNext(new ProgressInfo(name, String.format("%.1fM", index / 256.0), 100 * index / count));
@@ -118,60 +120,97 @@ public class AsyncAging extends AsyncBase {
         if (!path.exists()) path.mkdirs();
         File big = new File(testPath.getPath(), "big.txt");
         big.delete();
-        double last = 18 * 1024 * 1024 * 1024;//填满,预留500M空间
+        double last = 18.7 * 1024 * 1024 * 1024;//填满,预留500M空间
+        if (!Method.isEmpty(Config.Admin.File4s)) {
+            try {
+                File file = new File(Config.Admin.File4s);
+                FileInputStream reader = new FileInputStream(Config.Admin.File4s);
+                Config.Admin.File4sf = new byte[(int) file.length()];
+                reader.read(Config.Admin.File4sf);
+                reader.close();
+            } catch (Exception e) {
+            }
+        } else Config.Admin.File4sf = null;
+        if (!Method.isEmpty(Config.Admin.File8s)) {
+            try {
+                File file = new File(Config.Admin.File8s);
+                FileInputStream reader = new FileInputStream(Config.Admin.File8s);
+                Config.Admin.File8sf = new byte[(int) file.length()];
+                reader.read(Config.Admin.File4sf);
+                reader.close();
+            } catch (Exception e) {
+            }
+        } else Config.Admin.File8sf = null;
+        if (!Method.isEmpty(Config.Admin.File128s)) {
+            try {
+                File file = new File(Config.Admin.File128s);
+                FileInputStream reader = new FileInputStream(Config.Admin.File128s);
+                Config.Admin.File128sf = new byte[(int) file.length()];
+                reader.read(Config.Admin.File4sf);
+                reader.close();
+            } catch (Exception e) {
+            }
+        } else Config.Admin.File128sf = null;
         File sdcard = Environment.getExternalStorageDirectory();//得到sdcard的目录作为一个文件对象
         long usable = sdcard.getUsableSpace();//获取文件目录对象剩余空间
         double space = usable - last;//填充空间
         if (space > 0) {
             int index = 0;
-            BufferedInputStream reader4 = null, reader8 = null, reader128 = null;
-            int mark4 = 0, mark8 = 0, mark128 = 0;
+            int onceSpace = 0;
             if (!Method.isEmpty(Config.Admin.File4s)) {
                 File file = new File(Config.Admin.File4s);
-                mark4 = (int) file.length();
-                reader4 = new BufferedInputStream(new FileInputStream(file));
+                onceSpace += (file.length() / 4096 + 1) * 4096 * aging.File4;
             }
             if (!Method.isEmpty(Config.Admin.File8s)) {
                 File file = new File(Config.Admin.File8s);
-                mark8 = (int) file.length();
-                reader8 = new BufferedInputStream(new FileInputStream(file));
+                onceSpace += (file.length() / 4096 + 1) * 4096 * aging.File8;
             }
             if (!Method.isEmpty(Config.Admin.File128s)) {
                 File file = new File(Config.Admin.File128s);
-                mark128 = (int) file.length();
-                reader128 = new BufferedInputStream(new FileInputStream(file));
+                onceSpace += (file.length() / 4096 + 1) * 4096 * aging.File128;
             }
-            if (reader4 == null && reader8 == null && reader128 == null) {
+            if (onceSpace == 0) {
                 emitter.onNext(new ProgressInfo(name, "未设置", false));
             } else {
-                while (true) {
+                int count = (int) space / onceSpace;
+                for (int i = 0; i < count; i++) {
                     if (iStop) return;
-                    if (reader4 != null)
-                        index += copyFile(path.getPath(), reader4, mark4, aging.File4, index);
-                    if (reader8 != null)
-                        index += copyFile(path.getPath(), reader8, mark8, aging.File8, index);
-                    if (reader128 != null)
-                        index += copyFile(path.getPath(), reader128, mark128, aging.File128, index);
-
-                    long usableSpace = sdcard.getUsableSpace();//获取文件目录对象剩余空间
-                    double value = 100 * (usable - usableSpace) / space;
-                    emitter.onNext(new ProgressInfo(name, index + "(填充" + String.format("%.3f", usableSpace / 1024.0 / 1024 / 1024) + "G)", (int) value));
-                    if (usableSpace < last) break;
+                    if (Config.Admin.File4sf != null)
+                        index += copyFile(Config.Admin.File4sf, path.getPath(), aging.File4, index);
+                    if (Config.Admin.File8sf != null)
+                        index += copyFile(Config.Admin.File8sf, path.getPath(), aging.File8, index);
+                    if (Config.Admin.File128sf != null)
+                        index += copyFile(Config.Admin.File128sf, path.getPath(), aging.File128, index);
+                    double value = onceSpace * i / 1024;
+                    String desc = value + "K";
+                    if (value > 1024) {
+                        value /= 1024;
+                        desc = String.format("%.1fM", value);
+                    }
+                    if (value > 1024) {
+                        value /= 1024;
+                        desc = String.format("%.2fG", value);
+                    }
+                    emitter.onNext(new ProgressInfo(name, index + "(填充" + desc + ")", i * 100 / count));
                 }
-                if (reader4 != null) reader4.close();
-                if (reader8 != null) reader8.close();
-                if (reader128 != null) reader128.close();
             }
         }
         emitter.onNext(new ProgressInfo(name, "填充完成", 100));
     }
 
-    private int copyFile(String path, BufferedInputStream reader, int mark, int count, int index) throws Exception {
+    private int copyFile(byte[] buffer, String path, int count, int index) throws Exception {
         for (int i = 1; i <= count; i++) {
-            reader.mark(mark);
-            copyFile(reader, path, "%09d", index + i);
+            copyFile(buffer, path, "%09d", index + i);
         }
         return count;
+    }
+
+    private void copyFile(byte[] buffer, String path, String format, int index) throws Exception {
+        File imageFile = new File(path, String.format(format, index));
+        FileOutputStream output = new FileOutputStream(imageFile);
+        output.write(buffer, 0, buffer.length);
+        output.flush();
+        output.close();
     }
 
     private void execApp(ObservableEmitter<LoadInfo> emitter, String name, int count) throws Exception {
@@ -323,7 +362,7 @@ public class AsyncAging extends AsyncBase {
     private void copyFile(BufferedInputStream reader, String path, String format, int index) throws Exception {
         File imageFile = new File(path, String.format(format, index));
         FileOutputStream output = new FileOutputStream(imageFile);
-        byte[] bytes = new byte[1024];
+        byte[] bytes = new byte[4096];
         int read;
         while ((read = reader.read(bytes)) != -1) {
             output.write(bytes, 0, read);

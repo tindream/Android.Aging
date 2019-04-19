@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import com.riwise.aging.enums.IListener;
 import com.riwise.aging.view.View_About;
@@ -39,6 +40,11 @@ import com.riwise.aging.view.View_Confirm;
 
 public class Method {
     private static Toast toast;
+
+    //随机整数
+    public static int round(int max) {
+        return new Random().nextInt(max);
+    }
 
     //获取外置SD卡路径
     public static List<String> getExtSDCardPath() {

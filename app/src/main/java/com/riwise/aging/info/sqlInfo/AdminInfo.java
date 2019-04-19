@@ -13,6 +13,9 @@ public class AdminInfo {
     public String Videos;
     public String Apps;
     public String File4s;
+    public byte[] File4sf;
     public String File8s;
+    public byte[] File8sf;
     public String File128s;
+    public byte[] File128sf;
 }
