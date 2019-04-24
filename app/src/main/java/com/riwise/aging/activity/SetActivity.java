@@ -54,7 +54,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
             //判断sdcard存储空间是否满足文件的存储
             File sdcard = Environment.getExternalStorageDirectory();//得到sdcard的目录作为一个文件对象
             long totalSpace = sdcard.getTotalSpace();
-            Config.I32 = totalSpace < 1024 * 1024 * 1024 * 32;
+            Config.I32 = totalSpace < 1024 * 1024 * 1024 * 32.0;
             list.add(new SetInfo("内置SD卡 " + (Config.I32 ? "=" : ">") + " 32G", true));
             list.add(new SetInfo());
         } else {

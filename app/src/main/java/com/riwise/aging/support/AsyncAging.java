@@ -114,7 +114,7 @@ public class AsyncAging extends AsyncBase {
                 count++;
                 if (count % 10 == 0) {
                     if (iStop) return;
-                    emitter.onNext(new ProgressInfo(name, count + "(删除)", 100 * i / allFiles.length));
+                    emitter.onNext(new ProgressInfo(name, count + "(" + files + ")", 100 * i / allFiles.length));
                 }
             }
         }
@@ -127,7 +127,7 @@ public class AsyncAging extends AsyncBase {
         emitter.onNext(new ProgressInfo(name, "删除", 0));
         File big = new File(testPath.getPath(), "big.txt");
         big.delete();
-        double last = 18.2 * 1024 * 1024 * 1024;//填满,预留500M空间
+        double last = aging.Last * 1024 * 1024 * 1024;//填满,预留500M空间
         if (!Method.isEmpty(Config.Admin.File4s)) {
             try {
                 File file = new File(Config.Admin.File4s);
@@ -163,23 +163,30 @@ public class AsyncAging extends AsyncBase {
         double space = usable - last;//填充空间
         if (space > 0) {
             int index = 0;
-            int onceSpace = 0;
+            long onceSpace = 0;
             if (!Method.isEmpty(Config.Admin.File4s)) {
                 File file = new File(Config.Admin.File4s);
-                onceSpace += (file.length() / 4096 + 1) * 4096 * aging.File4;
+                long length = (int) file.length() / 4096;
+                if (file.length() % 4096 > 0) length += 1;
+                onceSpace += length * 4096 * aging.File4;
             }
             if (!Method.isEmpty(Config.Admin.File8s)) {
                 File file = new File(Config.Admin.File8s);
-                onceSpace += (file.length() / 4096 + 1) * 4096 * aging.File8;
+                long length = (int) file.length() / 4096;
+                if (file.length() % 4096 > 0) length += 1;
+                onceSpace += length * 4096 * aging.File8;
             }
             if (!Method.isEmpty(Config.Admin.File128s)) {
                 File file = new File(Config.Admin.File128s);
-                onceSpace += (file.length() / 4096 + 1) * 4096 * aging.File128;
+                long length = (int) file.length() / 4096;
+                if (file.length() % 4096 > 0) length += 1;
+                onceSpace += length * 4096 * aging.File128;
             }
             if (onceSpace == 0) {
                 emitter.onNext(new ProgressInfo(name, "未设置", false));
             } else {
-                int count = (int) space / onceSpace;
+                String target = String.format("%.1fG", space / 1024 / 1024 / 1024);
+                int count = (int) (space / onceSpace);
                 for (int i = 0; i < count; i++) {
                     if (iStop) return;
                     if (Config.Admin.File4sf != null)
@@ -188,7 +195,7 @@ public class AsyncAging extends AsyncBase {
                         index += copyFile(Config.Admin.File8sf, path.getPath(), aging.File8, index);
                     if (Config.Admin.File128sf != null)
                         index += copyFile(Config.Admin.File128sf, path.getPath(), aging.File128, index);
-                    double value = onceSpace * i / 1024;
+                    double value = onceSpace * i / 1024.0;
                     String desc = value + "K";
                     if (value > 1024) {
                         value /= 1024;
@@ -198,7 +205,7 @@ public class AsyncAging extends AsyncBase {
                         value /= 1024;
                         desc = String.format("%.2fG", value);
                     }
-                    emitter.onNext(new ProgressInfo(name, index + "(填充" + desc + ")", i * 100 / count));
+                    emitter.onNext(new ProgressInfo(name, index + "(" + desc + "/" + target + ")", i * 100 / count));
                 }
             }
         }
