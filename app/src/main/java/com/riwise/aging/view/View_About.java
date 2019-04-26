@@ -7,12 +7,13 @@ import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
 
 import com.riwise.aging.R;
+import com.riwise.aging.support.Config;
 
 public class View_About extends View_Base {
     public void show() {
         super.show();
 
-        String desc = "Version：" + activity.getString(R.string.version);
+        String desc = "Version：" + Config.version;
         SpannableString span = new SpannableString(desc);
         span.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorPrimary)), 8, desc.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         TextView  textView = view_custom.findViewById(R.id.id_msg);

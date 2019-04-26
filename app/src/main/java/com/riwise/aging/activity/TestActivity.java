@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.provider.Telephony;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -30,6 +31,7 @@ import com.riwise.aging.support.MyAdapter;
 import com.riwise.aging.support.ViewHolder;
 import com.riwise.aging.ui.ChildActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -187,8 +189,8 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
                 break;
             case setBackColor:
                 loader = (LoaderInfo) info;
-                LinearLayout view = loader.holder.getView(loader.id);
-                view.setBackgroundColor(getResources().getColor(loader.imageId > 0 ? loader.imageId : R.color.Transparent));
+                LinearLayout linear = loader.holder.getView(loader.id);
+                linear.setBackgroundColor(getResources().getColor(loader.imageId > 0 ? loader.imageId : R.color.Transparent));
                 TextView textView = loader.holder.getView(R.id.test_name);
                 textView.setTextColor(getResources().getColor(loader.imageId > R.color.Transparent ? R.color.While : R.color.BlackLight));
                 textView = loader.holder.getView(R.id.test_desc);
@@ -198,6 +200,11 @@ public class TestActivity extends ChildActivity implements View.OnClickListener,
                 ListView listView = findViewById(R.id.test_listView);
                 //设置listView的Adapter
                 listView.setAdapter(((AdapterInfo) info).adapter);
+                listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
+                    //我们需要的内容，跳转页面或显示详细信息
+                    SetInfo setInfo = (SetInfo) ((AdapterInfo) info).list.get(position);
+                    Method.hit(setInfo.desc);
+                });
                 break;
             default:
                 exec(info);

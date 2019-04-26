@@ -15,11 +15,10 @@ public class MainActivity extends MainBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Config.load(this);
-        Method.log("Version=" + this.getString(R.string.version));
+        Method.log("Version=" + Config.version);
         CrashHandlers.getInstance().init();
         super.layoutResID = R.layout.activity_main;
         super.onCreate(savedInstanceState);
-        Config.context = this;
         new AsyncLoad().setListener(this);
         initFragments();
         String[] permissions = new String[]{

@@ -127,7 +127,7 @@ public class AsyncAging extends AsyncBase {
         emitter.onNext(new ProgressInfo(name, "删除", 0));
         File big = new File(testPath.getPath(), "big.txt");
         big.delete();
-        double last = aging.Last * 1024 * 1024 * 1024;//填满,预留500M空间
+        double last = aging.Last * 1024 * 1024 * 1024;//填满,预留与剩余空间一致
         if (!Method.isEmpty(Config.Admin.File4s)) {
             try {
                 File file = new File(Config.Admin.File4s);

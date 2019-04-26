@@ -76,7 +76,7 @@ public class SetActivity extends ChildActivity implements IListListener, ILoadLi
 
         list.add(new SetInfo());
         list.add(new SetInfo(getString(R.string.btn_log)));
-        list.add(new SetInfo(getString(R.string.btn_about), getString(R.string.version), true));
+        list.add(new SetInfo(getString(R.string.btn_about), Config.version, true));
         list.add(new SetInfo());
         list.add(new SetInfo());
         new AsyncListView().setListener(this, this).init(this, list, R.layout.item_set);
